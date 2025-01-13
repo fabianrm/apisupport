@@ -29,6 +29,7 @@ class StorePurchaseRequest extends FormRequest
             'igv' => 'numeric',
             'total' => 'numeric',
             'status' => 'boolean',
+            'store_id' => 'required',
             'details' => 'required|array', // Los detalles deben estar presentes
         ];
     }
@@ -48,5 +49,4 @@ class StorePurchaseRequest extends FormRequest
             'details.required' => 'La compra no tiene items.',
         ];
     }
-
 }

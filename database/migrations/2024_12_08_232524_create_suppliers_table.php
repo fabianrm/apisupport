@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
+            $table->foreignId('store_id')->constrained('stores')->onDelete('cascade'); // Almacén
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

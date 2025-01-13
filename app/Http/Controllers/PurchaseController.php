@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePurchaseDetailRequest;
 use App\Models\Purchase;
 use App\Http\Requests\StorePurchaseRequest;
-use App\Http\Requests\UpdatePurchaseRequest;
 use App\Http\Resources\PurchaseCollection;
 use App\Models\InventoryMovement;
+use App\Models\Product;
 use App\Models\PurchaseDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -97,6 +96,15 @@ class PurchaseController extends Controller
                     'created_by' => auth()->user()->id,
                     'updated_by' => auth()->user()->id,
                 ]);
+
+                // Actualizar el current_stock del producto
+                $product = Product::findOrFail($detail['product_id']);
+
+                // Calcular el stock actual desde movimientos relacionados al producto
+                $currentStock = PurchaseDetail::where('product_id', $product->id)
+                    ->join('inventory_movements', 'purchase_details.id', '=', 'inventory_movements.purchase_detail_id')
+                    ->sum('inventory_movements.quantity');
+                $product->update(['current_stock' => $currentStock]);
             }
 
             DB::commit();
@@ -139,7 +147,18 @@ class PurchaseController extends Controller
         // Buscar la compra existente
         $purchase = Purchase::findOrFail($id);
 
-        //TODO: Actualizar sino hubo movimiento de salida de productos
+        // Validar que no haya movimientos de inventario distintos a los de entrada por esta compra
+        foreach ($purchase->details as $detail) {
+            $hasOtherMovements = InventoryMovement::where('purchase_detail_id', $detail->id)
+            ->where('movement_type_id', '!=', 1) // Suponiendo que "1" es el tipo de movimiento "entrada"
+            ->exists();
+
+            if ($hasOtherMovements) {
+                return response()->json([
+                    'message' => 'No se puede actualizar la orden de compra porque hay movimientos de inventario asociados a los productos.',
+                ], 400);
+            }
+        }
 
         // Validar los datos de la cabecera
         $validatedPurchase = Validator::make(
@@ -148,6 +167,8 @@ class PurchaseController extends Controller
                 'supplier_id' => 'required|exists:suppliers,id',
                 'purchase_date' => 'required|date',
                 'invoice_number' => 'required|string|unique:purchases,invoice_number,' . $id,
+                'store_id' => 'required'
+
             ]
         )->validate();
 
@@ -161,6 +182,11 @@ class PurchaseController extends Controller
                 'details.*.sale_price' => 'required|numeric',
                 'details.*.quantity' => 'required|integer|min:1',
                 'details.*.remaining_quantity' => 'integer',
+                'details.*.model' => 'string',
+                'details.*.serial' => '',
+                'details.*.imei' => '',
+                'details.*.color' => '',
+                'details.*.capacity' => '',
                 'details.*.ubication_detail' => 'string'
             ]
         )->validate();
@@ -215,6 +241,12 @@ class PurchaseController extends Controller
                         'updated_by' => auth()->user()->id,
                     ]
                 );
+
+                // Actualizar el current_stock del producto
+                $product = Product::findOrFail($detail['product_id']);
+                $currentStock = InventoryMovement::where('product_id', $product->id)
+                ->sum('quantity'); // Sumar todas las cantidades de los movimientos relacionados
+                $product->update(['current_stock' => $currentStock]);
             }
 
             DB::commit();
@@ -238,8 +270,51 @@ class PurchaseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Purchase $purchase)
+    public function destroy($id)
     {
-        //
+        $purchase = Purchase::with('details')->findOrFail($id);
+
+        DB::beginTransaction();
+
+        try {
+            // Validar que no haya movimientos de inventario distintos a los de entrada por esta compra
+            foreach ($purchase->details as $detail) {
+                $hasOtherMovements = InventoryMovement::where('purchase_detail_id', $detail->id)
+                    ->where('movement_type_id', '!=', 1) // Suponiendo que "1" es el tipo de movimiento "entrada"
+                    ->exists();
+
+                if ($hasOtherMovements) {
+                    return response()->json([
+                        'message' => 'No se puede eliminar la orden de compra porque hay movimientos de inventario asociados a los productos.',
+                    ], 400);
+                }
+            }
+
+            // Eliminar movimientos de inventario relacionados con esta compra
+            foreach ($purchase->details as $detail) {
+                InventoryMovement::where('purchase_detail_id', $detail->id)->delete();
+            }
+
+            // Eliminar detalles de la compra
+            PurchaseDetail::where('purchase_id', $purchase->id)->delete();
+
+            // Eliminar la orden de compra
+            $purchase->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Orden de compra eliminada correctamente.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Error al eliminar la orden de compra: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Error al eliminar la orden de compra.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

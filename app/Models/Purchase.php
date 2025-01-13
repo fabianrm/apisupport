@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Purchase extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['supplier_id', 'purchase_date',  'invoice_number','subtotal', 'igv', 'total', 'status'];
+    protected $fillable = ['supplier_id', 'purchase_date', 'store_id',  'invoice_number','subtotal', 'igv', 'total', 'status'];
 
     public function supplier()
     {
@@ -20,4 +21,28 @@ class Purchase extends Model
     {
         return $this->hasMany(PurchaseDetail::class);
     }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
+
+    /**
+     * Capturar usuario
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->created_by = Auth::id();
+            $model->updated_by = Auth::id();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = Auth::id();
+        });
+    }
+
 }

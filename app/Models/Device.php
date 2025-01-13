@@ -23,6 +23,11 @@ class Device extends Model
         return $this->belongsTo(DeviceType::class);
     }
 
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
+
 
     /**
      * Capturar usuario

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2); // Total de la compra
             $table->string('invoice_number')->nullable(); // Número de factura
             $table->boolean('status')->default(true);
+            $table->foreignId('store_id')->constrained('stores')->onDelete('cascade'); // Almacén
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();

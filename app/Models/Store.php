@@ -22,6 +22,31 @@ class Store extends Model
         return $this->hasMany(Repair::class);
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
+
+    public function suppliers()
+    {
+        return $this->hasMany(Supplier::class);
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+
 
     /**
      * Capturar usuario

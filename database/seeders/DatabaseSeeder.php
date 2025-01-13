@@ -25,9 +25,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             BrandSeeder::class,
             CategorySeeder::class,
+            StoreSeeder::class,
             SupplierSeeder::class,
             MovementTypeSeeder::class,
-            StoreSeeder::class,
             SunatOperationTypeSeeder::class,
             SunatDocumentTypeSeeder::class,
             SunatPaymentMethodSeeder::class,
@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             SunatUnitSeeder::class,
             SunatTaxTypeSeeder::class,
             ProductSeeder::class,
+            CustomerSeeder::class,
         ]);
     }
 }

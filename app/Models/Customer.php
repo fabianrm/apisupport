@@ -10,7 +10,7 @@ class Customer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'document_type', 'document_number', 'email', 'phone', 'address', 'status'];
+    protected $fillable = ['name', 'document_type', 'document_number', 'email', 'phone', 'address', 'store_id', 'status'];
 
     public function devices()
     {
@@ -20,6 +20,11 @@ class Customer extends Model
     public function sales()
     {
         return $this->hasMany(Sale::class);
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 
     /**

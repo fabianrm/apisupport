@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('model')->nullable();
             $table->string('serial')->nullable();
             $table->string('imei')->nullable();
+            $table->string('color')->nullable();
+            $table->string('capacity')->nullable();
+            $table->enum('status', ['new', 'used', 'repair']);
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade'); // Almacén
             $table->string('ubication_detail')->nullable(); // Cantidad disponible del lote
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');

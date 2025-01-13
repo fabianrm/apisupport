@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'type', 'category_id', 'brand_id', 'sunat_unit', 'current_stock', 'min_stock', 'image', 'status', 'available'];
+    protected $fillable = ['name', 'description', 'type', 'category_id', 'brand_id', 'sunat_unit', 'current_stock', 'min_stock', 'image', 'store_id', 'status', 'available'];
 
     public function brand()
     {
@@ -20,6 +20,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 
     public function sunatUnit()

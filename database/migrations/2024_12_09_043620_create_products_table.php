@@ -23,10 +23,10 @@ return new class extends Migration
             $table->integer('min_stock')->default(0);
 
             $table->string('image')->nullable();
-            $table->enum('status', ['new', 'used', 'repair']);
-            $table->boolean('available')->default(true);
+            $table->boolean('status')->default(true);
             
             $table->foreign('sunat_unit')->references('code')->on('sunat_units')->onDelete('restrict');
+            $table->foreignId('store_id')->constrained('stores')->onDelete('restrict'); // Almacén
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();

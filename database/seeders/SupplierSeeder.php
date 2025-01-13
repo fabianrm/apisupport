@@ -14,7 +14,7 @@ class SupplierSeeder extends Seeder
     public function run(): void
     {
         $suppliers = [
-            ['ruc' => '11111111111', 'name' => 'Sin Proveedor', 'email' => 'no@email.com', 'phone' => '999999999', 'address' => '-', 'status' => true],
+            ['ruc' => '11111111111', 'name' => 'Sin Proveedor', 'email' => 'no@email.com', 'phone' => '999999999', 'address' => '-', 'status' => true, 'store_id' => 1],
         ];
 
         foreach ($suppliers as $supplier) {
