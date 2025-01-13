@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('presentations', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+        Schema::create('sunat_units', function (Blueprint $table) {
+            $table->string('code', 3)->primary(); // Código de la unidad de medida (Ejemplo: NIU, ZZ)
+            $table->string('description'); // Descripción de la unidad (Ejemplo: Unidad, Servicios Profesionales)
             $table->boolean('status')->default(true);
             $table->timestamps();
         });
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('presentations');
+        Schema::dropIfExists('sunat_units');
     }
 };

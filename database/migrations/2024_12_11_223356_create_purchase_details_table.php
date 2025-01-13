@@ -15,15 +15,17 @@ return new class extends Migration
             $table->id();
             $table->foreignId('purchase_id')->constrained('purchases')->onDelete('cascade'); // Relación con la compra
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Producto relacionado
+            $table->decimal('purchase_price', 10, 2); // Precio de compra
+            $table->decimal('sale_price', 10, 2)->nullable(); // Precio de venta sugerido
+            $table->integer('quantity'); // Cantidad comprada
+            $table->integer('remaining_quantity')->nullable(); // Cantidad disponible del lote
             $table->string('model')->nullable();
             $table->string('serial')->nullable();
             $table->string('imei')->nullable();
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade'); // Almacén
-            $table->decimal('purchase_price', 10, 2); // Precio de compra
-            $table->decimal('sale_price', 10, 2)->nullable(); // Precio de venta sugerido
-            $table->integer('quantity'); // Cantidad comprada
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->string('ubication_detail')->nullable(); // Cantidad disponible del lote
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }

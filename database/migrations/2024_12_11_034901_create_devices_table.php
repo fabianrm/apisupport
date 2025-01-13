@@ -20,8 +20,9 @@ return new class extends Migration
             $table->string('imei')->nullable();
             $table->string('lock_code')->nullable();
             $table->text('problem_description')->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->boolean('status')->default(true);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }

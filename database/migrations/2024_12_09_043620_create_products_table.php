@@ -18,10 +18,17 @@ return new class extends Migration
             $table->enum('type', ['product', 'part']); // Tipo: producto (product) o repuesto (part)
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Categoria
             $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade'); // Marca
-            $table->foreignId('presentation_id')->constrained('presentations')->onDelete('cascade'); // Presentación
+            $table->string('sunat_unit');
+            $table->integer('current_stock')->default(0);
+            $table->integer('min_stock')->default(0);
+
             $table->string('image')->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->enum('status', ['new', 'used', 'repair']);
+            $table->boolean('available')->default(true);
+            
+            $table->foreign('sunat_unit')->references('code')->on('sunat_units')->onDelete('restrict');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }

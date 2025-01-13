@@ -1,0 +1,156 @@
+Table users {
+    id int [pk, increment]
+    name varchar
+    email varchar [unique]
+    password varchar
+    role varchar // secretary, technician, admin
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table customers {
+    id int [pk, increment]
+    name varchar
+    email varchar
+    phone varchar
+    address varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table stores {
+    id int [pk, increment]
+    name varchar
+    location varchar
+    phone varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table device_types {
+    id int [pk, increment]
+    name varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table devices {
+    id int [pk, increment]
+    customer_id int [ref: > customers.id]
+    device_type_id int [ref: > device_types.id]
+    model varchar
+    serial_number varchar
+    problem_description text
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table repairs {
+    id int [pk, increment]
+    device_id int [ref: > devices.id]
+    technician_id int [ref: > users.id]
+    store_id int [ref: > stores.id]
+    status varchar // registrado, asignado, atendiendo, etc.
+    repair_cost decimal
+    replacement_cost decimal
+    total_cost decimal
+    registered_at timestamp
+    delivery_date timestamp
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table products {
+    id int [pk, increment]
+    name varchar
+    description text
+    type enum [values: 'product', 'part']
+    current_stock int
+    store_id int [ref: > stores.id]
+    brand_id int [ref: > brands.id]
+    presentation_id int [ref: > presentations.id]
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table repair_products {
+    id int [pk, increment]
+    repair_id int [ref: > repairs.id]
+    product_id int [ref: > products.id]
+    quantity int
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table suppliers {
+    id int [pk, increment]
+    name varchar
+    email varchar
+    phone varchar
+    address varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table purchases {
+    id int [pk, increment]
+    supplier_id int [ref: > suppliers.id]
+    purchase_date date
+    total decimal
+    invoice_number varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table purchase_details {
+    id int [pk, increment]
+    purchase_id int [ref: > purchases.id]
+    product_id int [ref: > products.id]
+    store_id int [ref: > stores.id]
+    purchase_price decimal
+    sale_price decimal
+    quantity int
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table brands {
+    id int [pk, increment]
+    name varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table presentations {
+    id int [pk, increment]
+    name varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table kardex {
+    id int [pk, increment]
+    product_id int [ref: > products.id]
+    store_id int [ref: > stores.id]
+    movement_type enum [values: 'entry', 'exit']
+    related_id int // ID related to purchases, sales, or repairs
+    quantity int
+    description varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Ref: products.store_id > stores.id
+Ref: products.brand_id > brands.id
+Ref: products.presentation_id > presentations.id
+Ref: devices.customer_id > customers.id
+Ref: devices.device_type_id > device_types.id
+Ref: repairs.device_id > devices.id
+Ref: repairs.technician_id > users.id
+Ref: repairs.store_id > stores.id
+Ref: repair_products.repair_id > repairs.id
+Ref: repair_products.product_id > products.id
+Ref: purchases.supplier_id > suppliers.id
+Ref: purchase_details.purchase_id > purchases.id
+Ref: purchase_details.product_id > products.id
+Ref: purchase_details.store_id > stores.id

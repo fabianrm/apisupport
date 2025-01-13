@@ -14,12 +14,22 @@ return new class extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('ruc');
             $table->string('location');
+
+            $table->string('ubigeo');
+            $table->string('department');
+            $table->string('province');
+            $table->string('district');
+            $table->string('urbanization');
             $table->string('address');
+            $table->string('sunat_local_code');
+
             $table->string('phone')->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); //Responsable de tienda
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->boolean('status')->default(true);
+            $table->foreignId('user_id')->constrained()->onDelete('restrict'); //Responsable de tienda
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }

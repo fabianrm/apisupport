@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('repair_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('repair_id')->constrained('repairs')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Producto relacionado
+            $table->foreignId('purchase_detail_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity');
             $table->decimal('price', 10, 2)->nullable();
             $table->decimal('subtotal', 10, 2)->nullable();

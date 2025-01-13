@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('movement_types', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // Ejemplo: Compra, Venta, Reparación, Ajuste, Transferencia
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

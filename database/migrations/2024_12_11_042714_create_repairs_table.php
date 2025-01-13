@@ -20,8 +20,8 @@ return new class extends Migration
             $table->decimal('total_cost', 10, 2)->nullable();
             $table->timestamp('registered_at')->nullable();
             $table->timestamp('delivery_date')->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }
