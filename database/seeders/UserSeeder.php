@@ -22,7 +22,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('123456'), // Cambia esto si necesitas un valor diferente
                 'address' => '123 Admin Street',
                 'phone' => '987654321',
-                'role_id' => 1, // Asegúrate de que exista un rol con ID 1 para administrador
                 'status' => true,
             ],
             [
@@ -32,7 +31,15 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('123456'), // Cambia esto si necesitas un valor diferente
                 'address' => '456 User Lane',
                 'phone' => '912345678',
-                'role_id' => 2, // Asegúrate de que exista un rol con ID 2 para usuario
+                'status' => true,
+            ],
+            [
+                'dni' => '56543453',
+                'name' => 'Tecnichian User',
+                'email' => 'tec@gmail.com',
+                'password' => Hash::make('123456'), // Cambia esto si necesitas un valor diferente
+                'address' => '456 User Lane',
+                'phone' => '912345678',
                 'status' => true,
             ],
         ];

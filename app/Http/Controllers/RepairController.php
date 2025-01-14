@@ -7,6 +7,7 @@ use App\Http\Requests\StoreRepairRequest;
 use App\Http\Requests\UpdateRepairRequest;
 use App\Http\Resources\RepairCollection;
 use App\Http\Resources\RepairResource;
+use App\Models\RepairHistory;
 
 class RepairController extends Controller
 {
@@ -32,7 +33,17 @@ class RepairController extends Controller
      */
     public function store(StoreRepairRequest $request)
     {
-        $repair = Repair::create($request->validated());
+        $validatedData = $request->validated();
+        $repair = Repair::create($validatedData);
+
+        RepairHistory::create([
+            'repair_id' => $repair->id,
+            'status' => 'asignado',
+            'comment' => 'Cliente vendrá a las 2pm',
+            'changed_by' => auth()->user()->id,
+        ]);
+
+
         $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
         return new RepairResource($repair);
     }

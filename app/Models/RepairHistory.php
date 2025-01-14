@@ -6,32 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class Repair extends Model
+class RepairHistory extends Model
 {
     use HasFactory;
+    protected $fillable = ['repair_id', 'status', 'changed_by','comment'];
 
-    protected $fillable = ['device_id', 'technician_id', 'store_id', 'status', 'total_cost', 'registered_at', 'delivery_date'];
-
-    public function device()
+    public function repairs()
     {
-        return $this->belongsTo(Device::class);
+        return $this->hasMany(Repair::class);
     }
-
-    public function technician()
-    {
-        return $this->belongsTo(User::class, 'technician_id');
-    }
-
-    public function store()
-    {
-        return $this->belongsTo(Store::class);
-    }
-
-    public function history()
-    {
-        return $this->belongsTo(RepairHistory::class);
-    }
-
 
     /**
      * Capturar usuario
@@ -50,5 +33,4 @@ class Repair extends Model
             $model->updated_by = Auth::id();
         });
     }
-
 }

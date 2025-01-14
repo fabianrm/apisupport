@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->boolean('status');
             $table->rememberToken();
             $table->timestamps();
