@@ -22,6 +22,7 @@ class DeviceResource extends JsonResource
             'imei' => $this->imei,
             'lock_code' => $this->lock_code,
             'problem_description' => $this->problem_description,
+            'store_id' => $this->store_id,
             'status' => $this->status
         ];
     }

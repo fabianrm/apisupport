@@ -30,7 +30,9 @@ class UpdateDeviceRequest extends FormRequest
                 'serial_number' => ['required'],
                 'imei' => ['required'],
                 'lock_code' => [],
-                'problem_description' => ['required']
+                'problem_description' => ['required'],
+                'store_id' => ['required'],
+                'status' => ['required']
             ];
         } else {
             return [
@@ -40,7 +42,9 @@ class UpdateDeviceRequest extends FormRequest
                 'serial_number' => ['sometimes', 'required'],
                 'imei' => ['sometimes', 'required'],
                 'lock_code' => ['sometimes',],
-                'problem_description' => ['sometimes', 'required']
+                'problem_description' => ['sometimes', 'required'],
+                'store_id' => ['sometimes', 'required'],
+                'status' => ['sometimes', 'required']
             ];
         }
     }

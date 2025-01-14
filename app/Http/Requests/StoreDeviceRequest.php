@@ -28,7 +28,9 @@ class StoreDeviceRequest extends FormRequest
             'serial_number' => ['required'],
             'imei' => ['required'],
             'lock_code' => [],
-            'problem_description' => ['required']
+            'problem_description' => ['required'],
+            'store_id' => ['required'],
+            'status' => ['required'],
         ];
     }
 }

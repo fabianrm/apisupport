@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Repair;
 use App\Http\Requests\StoreRepairRequest;
 use App\Http\Requests\UpdateRepairRequest;
+use App\Http\Resources\RepairCollection;
+use App\Http\Resources\RepairResource;
 
 class RepairController extends Controller
 {
@@ -13,7 +15,8 @@ class RepairController extends Controller
      */
     public function index()
     {
-        //
+        $repairs = Repair::with(['device', 'technician', 'store'])->get();
+        return new RepairCollection($repairs);
     }
 
     /**
@@ -29,7 +32,9 @@ class RepairController extends Controller
      */
     public function store(StoreRepairRequest $request)
     {
-        //
+        $repair = Repair::create($request->validated());
+        $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
+        return new RepairResource($repair);
     }
 
     /**
@@ -53,7 +58,9 @@ class RepairController extends Controller
      */
     public function update(UpdateRepairRequest $request, Repair $repair)
     {
-        //
+        $repair->update($request->validated());
+        $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
+        return new RepairResource($repair);
     }
 
     /**

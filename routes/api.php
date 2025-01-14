@@ -8,6 +8,7 @@ use App\Http\Controllers\DeviceTypeController;
 use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\RepairController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -64,5 +65,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::apiResource('products', ProductController::class);
         //Purchases
         Route::apiResource('purchases', PurchaseController::class);
+        //Repairs
+        Route::apiResource('repairs', RepairController::class);
     });
 });

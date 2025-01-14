@@ -37,4 +37,13 @@ class RoleFactory extends Factory
             'description' => 'Standard user role',
         ]);
     }
+
+
+    public function technician()
+    {
+        return $this->state([
+            'name' => 'technician',
+            'description' => 'Technician user role',
+        ]);
+    }
 }

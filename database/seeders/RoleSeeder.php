@@ -15,5 +15,6 @@ class RoleSeeder extends Seeder
     {
         Role::factory()->admin()->create();
         Role::factory()->user()->create();
+        Role::factory()->technician()->create();
     }
 }
