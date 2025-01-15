@@ -38,6 +38,9 @@ class DatabaseSeeder extends Seeder
             SunatTaxTypeSeeder::class,
             ProductSeeder::class,
             CustomerSeeder::class,
+            PermissionSeeder::class,
+            RoleUserSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }
