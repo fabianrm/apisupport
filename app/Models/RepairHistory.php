@@ -9,11 +9,17 @@ use Illuminate\Support\Facades\Auth;
 class RepairHistory extends Model
 {
     use HasFactory;
-    protected $fillable = ['repair_id', 'status', 'changed_by','comment'];
+    protected $fillable = ['repair_id', 'status', 'changed_by','comment', 'store_id'];
 
     public function repairs()
     {
         return $this->hasMany(Repair::class);
+    }
+
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 
     /**

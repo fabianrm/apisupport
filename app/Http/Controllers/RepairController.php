@@ -8,6 +8,9 @@ use App\Http\Requests\UpdateRepairRequest;
 use App\Http\Resources\RepairCollection;
 use App\Http\Resources\RepairResource;
 use App\Models\RepairHistory;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class RepairController extends Controller
 {
@@ -34,18 +37,34 @@ class RepairController extends Controller
     public function store(StoreRepairRequest $request)
     {
         $validatedData = $request->validated();
-        $repair = Repair::create($validatedData);
 
-        RepairHistory::create([
-            'repair_id' => $repair->id,
-            'status' => 'asignado',
-            'comment' => 'Cliente vendrá a las 2pm',
-            'changed_by' => auth()->user()->id,
-        ]);
+        try {
+            DB::beginTransaction();
 
+            $repair = Repair::create($validatedData);
 
-        $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
-        return new RepairResource($repair);
+            $date = Carbon::now();
+
+            RepairHistory::create([
+                'repair_id' => $repair->id,
+                'status' => 'asignado',
+                'comment' => 'Asignado el ' . $date,
+                'changed_by' => auth()->user()->id,
+                'store_id' => $repair->store_id,
+            ]);
+
+            DB::commit();
+
+            $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
+            return new RepairResource($repair);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json([
+                'message' => 'Error al registrar la compra',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

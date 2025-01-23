@@ -37,8 +37,8 @@ class UpdateCustomerRequest extends FormRequest
             return [
                 'name' => ['sometimes', 'required'],
                 'document_type' => ['sometimes', 'required'],
-                'document_number' => ['sometimes', 'required', 'unique:customers'],
-                'email' => ['sometimes','required', 'email', 'unique:customers'],
+                'document_number' => ['sometimes', 'required',],
+                'email' => ['sometimes','required', 'email',],
                 'phone' => ['sometimes', ''],
                 'address' => ['sometimes', ''],
                 'status' => ['sometimes', 'required'],

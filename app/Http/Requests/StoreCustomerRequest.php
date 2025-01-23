@@ -30,7 +30,24 @@ class StoreCustomerRequest extends FormRequest
             'email' => ['required', 'email', 'unique:customers'],
             'phone' => [''],
             'address' => [''],
+            'store_id' => ['required'],
             'status' => ['required'],
         ];
     }
+
+    /**
+     * Mensajes de error personalizados para las validaciones.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'document_number.unique' => 'El Documento ya se encuentra registrado.',
+            'email.unique' => 'El email ya se encuentra registrado.',
+            'store_id.required' => 'El id de tienda es requerido.',
+            
+        ];
+    }
+
 }

@@ -25,7 +25,9 @@ class StoreRepairHistoryRequest extends FormRequest
             'repair_id'=>'required',
             'status'=>'required',
             'changed_by'=>'required',
-            'comment'=>'required'
+            'comment'=>'required',
+            'store_id'=>'required',
+
         ];
     }
 }

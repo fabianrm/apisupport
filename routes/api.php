@@ -30,13 +30,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
 
 
     Route::apiResource('users', UserController::class);
 
     //Login
-    Route::post('login', [UserController::class, 'login']);
+    Route::post('auth/login', [UserController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->post('auth/refresh-token', [UserController::class, 'refreshToken']);
+    Route::middleware('auth:sanctum')->get('auth/check-token', [UserController::class, 'checkToken']);
+
+
+    // Route::post('auth/refresh-token', [UserController::class, 'refreshToken']);
+    // Route::get('auth/check-token', [UserController::class, 'checkToken']);
 
     //Brand
     Route::patch('brands/{brand}/deactivate', [BrandController::class, 'deactivate']); //Desactivar brand
@@ -49,14 +58,15 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     //Device Type
     Route::apiResource('device-types', DeviceTypeController::class);
 
+    //Store
+    Route::apiResource('stores', StoreController::class);
+
     //Rutas autenticadas
     Route::middleware(['auth:sanctum'])->group(function () {
 
         //Customer
         Route::patch('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']); //Desactivar cliente
         Route::apiResource('customers', CustomerController::class);
-        //Store
-        Route::apiResource('stores', StoreController::class);
         //Device
         Route::apiResource('devices', DeviceController::class);
         //Suppliers

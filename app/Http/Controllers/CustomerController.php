@@ -46,7 +46,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        //
+        return new CustomerResource($customer);
     }
 
     /**
@@ -71,7 +71,14 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+        $customer->deleteOrFail();
+
+        return response()->json([
+            'data' => [
+                'status' => true,
+                'message' => 'Cliente eliminado correctamente'
+            ]
+        ]);
     }
     /**
      * Borrado logico de un cliente

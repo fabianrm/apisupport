@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('device_id')->constrained('devices')->onDelete('cascade');
             $table->foreignId('technician_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');
-            $table->enum('status', ['asignado', 'atencion', 'espera_pase', 'solucionado']);
+            $table->enum('status', ['asignado', 'atencion', 'espera_pase', 'solucionado', 'cancelada']);
             $table->decimal('total_cost', 10, 2)->nullable();
             $table->timestamp('registered_at')->nullable();
             $table->timestamp('delivery_date')->nullable();
