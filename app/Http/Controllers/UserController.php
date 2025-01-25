@@ -86,9 +86,6 @@ class UserController extends Controller
     public function refreshToken(Request $request)
     {
         $user = $request->user(); // Obtiene al usuario autenticado mediante el token actual
-
-        Log::info($user);
-
         if (!$user) {
             return response()->json(['error' => 'Token inválido o usuario no autenticado'], 401);
         }
@@ -125,7 +122,7 @@ class UserController extends Controller
 
         // Obtener al usuario autenticado
         $user = auth()->user();
-        Log::info($user);
+       // Log::info($user);
 
         if ($user) {
             return response()->json(

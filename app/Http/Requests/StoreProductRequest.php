@@ -32,7 +32,7 @@ class StoreProductRequest extends FormRequest
             'current_stock' => [''],
             'min_stock' => ['required'],
             'store_id' => ['required'],
-            'image' => [''],
+            'image' => 'nullable|image|mimes:jpeg,jpg|max:2048',
             'status' => ['required']
         ];
     }
@@ -50,8 +50,6 @@ class StoreProductRequest extends FormRequest
             'code.unique' => 'El Código ya se encuentra registrado.',
             'type.required' => 'El tipo (Producto o Parte) es requerido.',
             'store_id.required' => 'El id de tienda es requerido.',
-            
-
         ];
     }
 

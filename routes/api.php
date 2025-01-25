@@ -5,7 +5,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceTypeController;
-use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RepairController;
@@ -52,7 +51,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     //Category
     Route::apiResource('categories', CategoryController::class);
     Route::patch('categories/{category}/deactivate', [CategoryController::class, 'deactivate']); //Desactivar categoria
-    
+
     //Sunat Unit
     Route::apiResource('units', SunatUnitController::class);
     Route::patch('units/{unit}/deactivate', [SunatUnitController::class, 'deactivate']); //Desactivar unidad
@@ -63,8 +62,12 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     //Store
     Route::apiResource('stores', StoreController::class);
 
+    // Route::apiResource('products', ProductController::class);
+
     //Rutas autenticadas
     Route::middleware(['auth:sanctum'])->group(function () {
+
+        //  Route::put('/products/{product}', [ProductController::class, 'update']);
 
         //Customer
         Route::patch('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']); //Desactivar cliente
