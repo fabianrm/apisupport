@@ -33,17 +33,30 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $product = Product::create($request->validated());
-        $product->load(['brand', 'sunatUnit', 'category']); // Carga las relaciones necesarias
+        $validatedData = $request->except('image'); // Excluye la imagen del resto de los datos
+
+        $product = Product::create($validatedData);
+
+        // Verifica si se ha subido un archivo de imagen
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $product->id . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('images/products', $imageName, 'public');
+            $product->update(['image' => $imagePath]); // Actualiza la ruta de la imagen en la BD
+        }
+
+        $product->load(['brand', 'sunatUnit', 'category']);
         return new ProductResource($product);
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Product $product)
     {
-        //
+        $product->load(['category', 'brand', 'sunatUnit']); // Carga las relaciones necesarias
+        return new ProductResource($product);
     }
 
     /**
@@ -59,8 +72,28 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
-        $product->load(['brand', 'sunatUnit', 'category']); // Carga las relaciones necesarias
+        $validatedData = $request->except('image'); // Excluye la imagen del resto de los datos
+
+        // Actualiza los datos del producto
+        $product->update($validatedData);
+
+        // Verifica si se ha subido un archivo de imagen
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+
+            // Genera un nuevo nombre para la imagen
+            $imageName = $product->id . '.' . $image->getClientOriginalExtension();
+
+            // Guarda la imagen en el directorio público
+            $imagePath = $image->storeAs('images/products', $imageName, 'public');
+
+            // Actualiza la ruta de la imagen en la base de datos
+            $product->update(['image' => $imagePath]);
+        }
+
+        // Carga relaciones (si es necesario)
+        $product->load(['brand', 'sunatUnit', 'category']);
+
         return new ProductResource($product);
     }
 

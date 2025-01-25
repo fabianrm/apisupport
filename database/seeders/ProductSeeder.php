@@ -14,9 +14,9 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $products = [
-            ['name' => 'iPhone 11', 'description' => 'Normal', 'type'=> 'product', 'category_id'=> '1', 'brand_id' => '1', 'sunat_unit' => 'NIU', 'current_stock' => 0, 'min_stock'=>2, 'image'=>null, 'status' => 1, 'created_by' => 1,'updated_by' => 1, 'store_id'=> 1 ],
+            ['code'=> 'IS001','name' => 'iPhone 11', 'description' => 'Normal', 'type'=> 'product', 'category_id'=> '1', 'brand_id' => '1', 'sunat_unit' => 'NIU', 'current_stock' => 0, 'min_stock'=>2, 'image'=>null, 'status' => 1, 'created_by' => 1,'updated_by' => 1, 'store_id'=> 1 ],
 
-            ['name' => 'iPhone 15', 'description' => 'Normal', 'type' => 'product', 'category_id' => '1', 'brand_id' => '1', 'sunat_unit' => 'NIU', 'current_stock' => 0, 'min_stock' => 2, 'image' => null,'status' => 1,'created_by' => 1, 'updated_by' => 1, 'store_id' => 1],
+            ['code' => 'IS002','name' => 'iPhone 15', 'description' => 'Normal', 'type' => 'product', 'category_id' => '1', 'brand_id' => '1', 'sunat_unit' => 'NIU', 'current_stock' => 0, 'min_stock' => 2, 'image' => null,'status' => 1,'created_by' => 1, 'updated_by' => 1, 'store_id' => 1],
            
         ];
 

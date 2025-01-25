@@ -41,7 +41,7 @@ class SupplierController extends Controller
      */
     public function show(Supplier $supplier)
     {
-        //
+        return new SupplierResource($supplier);
     }
 
     /**
@@ -66,6 +66,13 @@ class SupplierController extends Controller
      */
     public function destroy(Supplier $supplier)
     {
-        //
+        $supplier->deleteOrFail();
+
+        return response()->json([
+            'data' => [
+                'status' => true,
+                'message' => 'Proveedor eliminado correctamente'
+            ]
+        ]);
     }
 }

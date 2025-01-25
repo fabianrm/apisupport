@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\SunatUnit;
 use App\Http\Requests\StoreSunatUnitRequest;
 use App\Http\Requests\UpdateSunatUnitRequest;
+use App\Http\Resources\SunatUnitCollection;
+use App\Http\Resources\SunatUnitResource;
 
 class SunatUnitController extends Controller
 {
@@ -13,7 +15,8 @@ class SunatUnitController extends Controller
      */
     public function index()
     {
-        //
+        $units = SunatUnit::all();
+        return new SunatUnitCollection($units);
     }
 
     /**
@@ -21,7 +24,7 @@ class SunatUnitController extends Controller
      */
     public function create()
     {
-        //
+      //
     }
 
     /**
@@ -29,7 +32,8 @@ class SunatUnitController extends Controller
      */
     public function store(StoreSunatUnitRequest $request)
     {
-        //
+        $unit = SunatUnit::create($request->validated());
+        return new SunatUnitResource($unit);
     }
 
     /**
@@ -53,7 +57,8 @@ class SunatUnitController extends Controller
      */
     public function update(UpdateSunatUnitRequest $request, SunatUnit $sunatUnit)
     {
-        //
+        $sunatUnit->update($request->validated());
+        return new SunatUnitResource($sunatUnit);
     }
 
     /**
@@ -62,5 +67,22 @@ class SunatUnitController extends Controller
     public function destroy(SunatUnit $sunatUnit)
     {
         //
+    }
+
+
+
+    /**
+     * Borrado logico de un cliente
+     */
+    public function deactivate(SunatUnit $unit)
+    {
+        // Cambiar el estado a "false" (desactivado)
+        $unit->update(['status' => false]);
+
+        // Retornar una respuesta JSON indicando éxito
+        return response()->json([
+            'message' => 'Marca desactivada exitosamente.',
+            'brand' => new SunatUnitResource($unit)
+        ], 200);
     }
 }

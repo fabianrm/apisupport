@@ -29,6 +29,7 @@ class UpdateSupplierRequest extends FormRequest
                 'email' => ['email'],
                 'phone' => [''],
                 'address' => [''],
+                'store_id' => ['required'],
                 'status' => ['required']
             ];
         } else {
@@ -38,8 +39,24 @@ class UpdateSupplierRequest extends FormRequest
                 'email' => ['sometimes', 'email', 'unique:suppliers'],
                 'phone' => ['sometimes', ''],
                 'address' => ['sometimes', ''],
+                'store_id' => ['required'],
                 'status' => ['sometimes', 'required']
             ];
         }
+    }
+
+    /**
+     * Mensajes de error personalizados para las validaciones.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'ruc.unique' => 'El Documento ya se encuentra registrado.',
+            'email.unique' => 'El email ya se encuentra registrado.',
+            'store_id.required' => 'El id de tienda es requerido.',
+
+        ];
     }
 }

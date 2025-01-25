@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RepairController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\SunatUnitController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -44,9 +45,6 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::middleware('auth:sanctum')->get('auth/check-token', [UserController::class, 'checkToken']);
 
 
-    // Route::post('auth/refresh-token', [UserController::class, 'refreshToken']);
-    // Route::get('auth/check-token', [UserController::class, 'checkToken']);
-
     //Brand
     Route::patch('brands/{brand}/deactivate', [BrandController::class, 'deactivate']); //Desactivar brand
     Route::apiResource('brands', BrandController::class);
@@ -54,6 +52,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     //Category
     Route::apiResource('categories', CategoryController::class);
     Route::patch('categories/{category}/deactivate', [CategoryController::class, 'deactivate']); //Desactivar categoria
+    
+    //Sunat Unit
+    Route::apiResource('units', SunatUnitController::class);
+    Route::patch('units/{unit}/deactivate', [SunatUnitController::class, 'deactivate']); //Desactivar unidad
 
     //Device Type
     Route::apiResource('device-types', DeviceTypeController::class);

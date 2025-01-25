@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->string('name');
             $table->text('description')->nullable();
             $table->enum('type', ['product', 'part']); // Tipo: producto (product) o repuesto (part)
