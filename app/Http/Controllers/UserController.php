@@ -45,14 +45,11 @@ class UserController extends Controller
             return response()->json(['error' => 'No tienes acceso a esta tienda'], 403);
         }
 
-        // Filtrar permisos asociados al rol del usuario y construir el menú jerárquico
-        // $permissions = Permission::with('children')
-        // ->whereHas('roles', function ($query) use ($roleUser) {
-        //     $query->where('roles.id', $roleUser->id);
-        // })
-        // ->where('parent_id', null) // Solo permisos raíz
-        // ->orderBy('order')
-        // ->get();
+
+    
+        // $user = auth()->user();
+        // $storeId = $user->stores()->pluck('store_id')->first();
+        // Log::info('StoreUser', $storeId);
 
         $permissions = Permission::select('id', 'name', 'description', 'icon', 'route', 'parent_id', 'order', 'status')
             ->with(['children' => function ($query) {
@@ -122,7 +119,7 @@ class UserController extends Controller
 
         // Obtener al usuario autenticado
         $user = auth()->user();
-       // Log::info($user);
+        // Log::info($user);
 
         if ($user) {
             return response()->json(

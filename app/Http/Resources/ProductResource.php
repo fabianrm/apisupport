@@ -29,6 +29,8 @@ class ProductResource extends JsonResource
             'current_stock' => $this->current_stock,
             'min_stock' => $this->min_stock,
             'store_id' => $this->store_id,
+            'store_name' => $this->store->name,
+            //'store' =>  new StoreResource($this->whenLoaded('store')),
             'image' => asset('storage/' . $this->image),
             'status' => $this->status
         ];

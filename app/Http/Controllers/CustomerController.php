@@ -7,7 +7,6 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerCollection;
 use App\Http\Resources\CustomerResource;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 

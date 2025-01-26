@@ -7,7 +7,6 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,7 +20,7 @@ class ProductController extends Controller
     public function index()
     {
         //$products = Product::all();
-        $products = Product::with(['category', 'brand', 'sunatUnit'])->get();
+        $products = Product::with(['category', 'brand', 'sunatUnit', 'store'])->get();
         return new ProductCollection($products);
     }
 
@@ -40,9 +39,6 @@ class ProductController extends Controller
     {
         $validatedData = $request->except('image'); // Excluye la imagen del resto de los datos
 
-        Log::info('Creando');
-        Log::info($validatedData);
-
         $product = Product::create($validatedData);
 
         // Verifica si se ha subido un archivo de imagen
@@ -55,7 +51,7 @@ class ProductController extends Controller
             $product->update(['image' => 'images/products/no-image.jpg']);
         }
 
-        $product->load(['brand', 'sunatUnit', 'category']);
+        $product->load(['brand', 'sunatUnit', 'category', 'store']);
         return new ProductResource($product);
     }
 
@@ -133,7 +129,7 @@ class ProductController extends Controller
             $product->update(['image' => $imagePath]);
         }
 
-        $product->load(['brand', 'sunatUnit', 'category']);
+        $product->load(['brand', 'sunatUnit', 'category', 'store']);
         return new ProductResource($product);
     }
 

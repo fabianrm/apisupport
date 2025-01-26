@@ -66,9 +66,6 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
 
     //Rutas autenticadas
     Route::middleware(['auth:sanctum'])->group(function () {
-
-        //  Route::put('/products/{product}', [ProductController::class, 'update']);
-
         //Customer
         Route::patch('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']); //Desactivar cliente
         Route::apiResource('customers', CustomerController::class);
