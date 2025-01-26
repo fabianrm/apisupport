@@ -43,7 +43,8 @@ class DeviceController extends Controller
      */
     public function show(Device $device)
     {
-        //
+        $device->load(['deviceType', 'customer']); // Carga las relaciones necesarias
+        return new DeviceResource($device);
     }
 
     /**

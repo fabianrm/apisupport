@@ -30,6 +30,20 @@ class Device extends Model
     }
 
 
+    // Relación con el modelo User para el usuario que creó el dispositivo
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    // Relación con el modelo User para el usuario que actualizó el dispositivo
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+
+
     /**
      * Capturar usuario
      * @return void

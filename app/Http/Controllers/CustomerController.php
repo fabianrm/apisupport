@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerCollection;
 use App\Http\Resources\CustomerResource;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 
@@ -15,10 +16,25 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::all();
+        // Obtener el parámetro 'q' de la query string
+        $searchQuery = $request->input('q');
+        
+        // Construir la consulta base
+        $query = Customer::query();
+
+        // Aplicar filtro por nombre si existe el parámetro 'q'
+        if ($searchQuery) {
+            $query->where('name', 'like', '%' . $searchQuery . '%');
+        }
+
+        // Obtener los resultados
+        $customers = $query->get();
+
+        // Retornar la colección
         return new CustomerCollection($customers);
+
     }
 
     /**

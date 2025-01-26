@@ -75,5 +75,16 @@ class User extends Authenticatable
     }
 
 
+    // Relación inversa para los dispositivos creados por el usuario
+    public function createdDevices()
+    {
+        return $this->hasMany(Device::class, 'created_by');
+    }
+
+    // Relación inversa para los dispositivos actualizados por el usuario
+    public function updatedDevices()
+    {
+        return $this->hasMany(Device::class, 'updated_by');
+    }
 
 }
