@@ -11,7 +11,18 @@ class Device extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['customer_id', 'device_type_id', 'model', 'serial_number', 'imei', 'lock_code', 'problem_description', 'store_id', 'status'];
+    protected $fillable = [
+        'code',
+        'customer_id',
+        'device_type_id',
+        'model',
+        'serial_number',
+        'imei',
+        'lock_code',
+        'problem_description',
+        'store_id',
+        'status'
+    ];
 
 
     public function customer()
@@ -76,6 +87,4 @@ class Device extends Model
     {
         return static::withoutGlobalScope(StoreScope::class);
     }
-
-
 }

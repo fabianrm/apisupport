@@ -16,6 +16,7 @@ class RoleUserSeeder extends Seeder
         $roleUsers = [
             ['user_id' => 1, 'role_id' => 1, 'store_id' => 1],
             ['user_id' => 3, 'role_id' => 3, 'store_id' => 1],
+            ['user_id' => 4, 'role_id' => 3, 'store_id' => 1],
         ];
 
         foreach ($roleUsers as $roleUser) {

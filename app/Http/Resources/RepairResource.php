@@ -16,6 +16,7 @@ class RepairResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'code' => $this->code,
             'device' => new DeviceResource($this->whenLoaded('device')),
             'technician' => new UserResource($this->whenLoaded('technician')),
             'store' => new StoreResource($this->whenLoaded('store')),

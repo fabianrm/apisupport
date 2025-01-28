@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
@@ -35,13 +36,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
 
 
-    Route::apiResource('users', UserController::class);
+    //Route::apiResource('users', AuthController::class);
 
     //Login
-    Route::post('auth/login', [UserController::class, 'login']);
+    Route::post('auth/login', [AuthController::class, 'login']);
 
-    Route::middleware('auth:sanctum')->post('auth/refresh-token', [UserController::class, 'refreshToken']);
-    Route::middleware('auth:sanctum')->get('auth/check-token', [UserController::class, 'checkToken']);
+    Route::middleware('auth:sanctum')->post('auth/refresh-token', [AuthController::class, 'refreshToken']);
+    Route::middleware('auth:sanctum')->get('auth/check-token', [AuthController::class, 'checkToken']);
 
 
     //Brand
@@ -66,6 +67,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
 
     //Rutas autenticadas
     Route::middleware(['auth:sanctum'])->group(function () {
+
+        //Filter Technicians
+        Route::post('users/technicians', [UserController::class, 'filterTechnicians']);
+        
         //Customer
         Route::patch('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']); //Desactivar cliente
         Route::apiResource('customers', CustomerController::class);
@@ -79,5 +84,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::apiResource('purchases', PurchaseController::class);
         //Repairs
         Route::apiResource('repairs', RepairController::class);
+        //Users
+        Route::apiResource('users', UserController::class);
     });
 });

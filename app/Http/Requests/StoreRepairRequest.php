@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRepairRequest extends FormRequest
@@ -25,9 +26,13 @@ class StoreRepairRequest extends FormRequest
             'device_id' => 'required|exists:devices,id',
             'technician_id' => 'required|exists:users,id',
             'store_id' => 'required|exists:stores,id',
+            'priority' => 'required|string',
+            'assigned_at' => '',
+            'resolved_at' => '',
+            'delivery_date' => '',
+            'closed_at' => '',
             'status' => 'required|string',
-            'total_cost' => 'required|numeric',
-            'registered_at' => 'required',
+            'total_cost' => '',
             'delivery_date' => ''
         ];
     }

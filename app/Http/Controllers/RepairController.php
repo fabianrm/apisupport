@@ -7,7 +7,9 @@ use App\Http\Requests\StoreRepairRequest;
 use App\Http\Requests\UpdateRepairRequest;
 use App\Http\Resources\RepairCollection;
 use App\Http\Resources\RepairResource;
+use App\Models\Device;
 use App\Models\RepairHistory;
+use App\Services\UtilService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -36,13 +38,17 @@ class RepairController extends Controller
      */
     public function store(StoreRepairRequest $request)
     {
+        $utilService = app(UtilService::class);
+        $uniqueCode = $utilService->generateUniqueCodeRepair('TK');
+
         $validatedData = $request->validated();
+        $validatedData['code'] = $uniqueCode;
+        $validatedData['assigned_at'] =  Carbon::now();
 
         try {
             DB::beginTransaction();
 
             $repair = Repair::create($validatedData);
-
             $date = Carbon::now();
 
             RepairHistory::create([
@@ -53,6 +59,18 @@ class RepairController extends Controller
                 'store_id' => $repair->store_id,
             ]);
 
+            // Actualizar el estado del dispositivo, primer evento
+            $device = Device::findOrFail($repair['device_id']);
+            $device->update(['status' => 'pendiente']);
+
+            /**
+             * TODO:
+             * despues de actualizar el estado quiero que me permita recibir archivos(fotos, pdf, etc),
+             * como evidencia del estado en que llega el dispositivo si en caso lo hubiera.
+             * Se deben subir a 'files/store/repairs'
+             */
+
+           
             DB::commit();
 
             $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
@@ -61,7 +79,7 @@ class RepairController extends Controller
             DB::rollBack();
             Log::error($e->getMessage());
             return response()->json([
-                'message' => 'Error al registrar la compra',
+                'message' => 'Error al asignar la tarea.',
                 'error' => $e->getMessage(),
             ], 500);
         }

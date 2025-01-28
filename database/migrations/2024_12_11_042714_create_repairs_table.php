@@ -13,13 +13,22 @@ return new class extends Migration
     {
         Schema::create('repairs', function (Blueprint $table) {
             $table->id();
+            $table->string('code');
             $table->foreignId('device_id')->constrained('devices')->onDelete('cascade');
             $table->foreignId('technician_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');
-            $table->enum('status', ['asignado', 'atencion', 'espera_pase', 'solucionado', 'cancelada']);
             $table->decimal('total_cost', 10, 2)->nullable();
-            $table->timestamp('registered_at')->nullable();
             $table->timestamp('delivery_date')->nullable();
+
+            $table->enum('status', ['registrado', 'pendiente', 'atencion', 'espera_pase', 'validacion', 'solucionado', 'cancelada']);
+            $table->enum('priority', ['baja', 'normal', 'alta']);
+
+            // Fechas de estado
+            $table->timestamp('assigned_at')->nullable();  // Cuándo fue asignado el ticket
+            $table->timestamp('resolved_at')->nullable();  // Cuándo fue resuelto el ticket
+            $table->timestamp('closed_at')->nullable();  // Cuándo se cerró el ticket
+
+
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();

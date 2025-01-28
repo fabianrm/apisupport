@@ -42,6 +42,15 @@ class UserSeeder extends Seeder
                 'phone' => '912345678',
                 'status' => true,
             ],
+            [
+                'dni' => '22343434',
+                'name' => 'Tecnichian User2',
+                'email' => 'tec2@gmail.com',
+                'password' => Hash::make('123456'), // Cambia esto si necesitas un valor diferente
+                'address' => '456 User Lane',
+                'phone' => '912345679',
+                'status' => true,
+            ],
         ];
 
         foreach ($users as $user) {

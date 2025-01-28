@@ -16,6 +16,7 @@ class DeviceResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'code' => $this->code,
             'customer_id' => $this->customer_id,
             'customer_name' => $this->customer->name,
             'customer' => new CustomerResource($this->whenLoaded('customer')),

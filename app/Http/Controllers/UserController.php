@@ -2,18 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
-use App\Models\Permission;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $users = User::all();
+        return new UserCollection($users);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */
@@ -23,126 +37,56 @@ class UserController extends Controller
     }
 
 
-    /** Login de Usuario */
-
-    public function login(LoginRequest $request): JsonResponse
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+
+
+    public function filterTechnicians(Request $request)
+    {
+        // Validar el parámetro 'store_id'
         $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-            'store_id' => 'required|exists:stores,id',
+            'store_id' => 'required|integer|exists:stores,id', // Ajusta el nombre de la tabla si es diferente
         ]);
 
-        $user = User::where('email', $validated['email'])->first();
+        $storeId = $validated['store_id'];
 
-        if (!$user || !Hash::check($validated['password'], $user->password) || !$user->status) {
-            return response()->json(['error' => 'Credenciales inválidas o usuario inactivo'], 401);
-        }
+        // Obtener usuarios cuyo rol sea 'admin' y coincidan con el store_id
+        $users = User::whereHas('roles', function ($query) use ($storeId) {
+            $query->where('name', 'technician')
+            ->where('role_user.store_id', $storeId); // Especifica la tabla pivote explícitamente
+        })->with('roles')->get();
 
-        $roleUser = $user->roles()->wherePivot('store_id', $validated['store_id'])->first();
-
-        if (!$roleUser) {
-            return response()->json(['error' => 'No tienes acceso a esta tienda'], 403);
-        }
-
-
-    
-        // $user = auth()->user();
-        // $storeId = $user->stores()->pluck('store_id')->first();
-        // Log::info('StoreUser', $storeId);
-
-        $permissions = Permission::select('id', 'name', 'description', 'icon', 'route', 'parent_id', 'order', 'status')
-            ->with(['children' => function ($query) {
-                $query->select('id', 'name', 'description', 'icon', 'route', 'parent_id', 'order', 'status');
-            }])
-            ->whereHas('roles', function ($query) use ($roleUser) {
-                $query->where('roles.id', $roleUser->id);
-            })
-            ->where('parent_id', null)
-            ->orderBy('order')
-            ->get();
-
-        $token = $user->createToken('userToken')->plainTextToken;
-
-        return response()->json([
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'store_id' => $validated['store_id'],
-                'role' => $roleUser->name,
-            ],
-            'permissions' => $permissions, // Menú jerárquico filtrado
-        ]);
+        // Retornar como UserCollection
+        return new UserCollection($users);
     }
 
-
-    //Refresh Token
-
-    public function refreshToken(Request $request)
-    {
-        $user = $request->user(); // Obtiene al usuario autenticado mediante el token actual
-        if (!$user) {
-            return response()->json(['error' => 'Token inválido o usuario no autenticado'], 401);
-        }
-
-        // Opcional: Revoca todos los tokens antiguos del usuario
-        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
-
-        // Crear un nuevo token
-        $newToken = $user->createToken('userToken')->plainTextToken;
-
-        // Cargar el store_id desde la relación roleUser
-        $storeId = $user->roleUser->store_id ?? null;
-
-
-        return response()->json([
-            'message' => 'Token refrescado exitosamente',
-            'token' => $newToken,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'status' => $user->status,
-                'store_id' => $storeId,
-            ]
-        ]);
-    }
-
-
-    public function checkToken(Request $request)
-    {
-
-        // Obtener el token desde el encabezado de autorización
-        $token = $request->bearerToken();
-
-        // Obtener al usuario autenticado
-        $user = auth()->user();
-        // Log::info($user);
-
-        if ($user) {
-            return response()->json(
-                [
-                    'message' => 'Token válido',
-                    'user' => [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'email' => $user->email,
-                    ],
-                    'token' => $token,
-                ],
-                200
-            );
-        }
-
-        return response()->json(
-            [
-                'statusCode' => '401',
-                'message' => 'No existe Token',
-                'error' => 'Unauthorized'
-            ],
-            401
-        );
-    }
 }

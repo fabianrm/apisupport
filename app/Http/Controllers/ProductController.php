@@ -73,40 +73,6 @@ class ProductController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    // public function update(UpdateProductRequest $request, Product $product)
-    // {
-    //     $validatedData = $request->except('image'); // Excluye la imagen del resto de los datos
-    //     // Actualiza los datos del producto
-    //     $product->update($validatedData);
-    //     // Elimina la imagen anterior si existe
-    //     if (
-    //         $product->image &&
-    //         $product->image !== 'images/products/no-image.jpg' &&
-    //         Storage::exists('public/' . $product->image)
-    //     ) {
-    //         Storage::delete('public/' . $product->image);
-    //     }
-    //     // Verifica si se ha subido un archivo de imagen
-    //     if ($request->hasFile('image')) {
-    //         $image = $request->file('image');
-    //         // Genera un nuevo nombre para la imagen
-    //         $imageName = $product->id . '.' . $image->getClientOriginalExtension();
-    //         // Guarda la imagen en el directorio público
-    //         $imagePath = $image->storeAs('images/products', $imageName, 'public');
-    //         // Actualiza la ruta de la imagen en la base de datos
-    //         $product->update(['image' => $imagePath]);
-    //     } else {
-    //         $product->update(['image' => 'images/products/no-image.jpg']);
-    //         Log::info('No se detectó ningún archivo de imagen.');
-    //     }
-    //     // Carga relaciones (si es necesario)
-    //     $product->load(['brand', 'sunatUnit', 'category']);
-    //     return new ProductResource($product);
-    // }
-
     public function update(UpdateProductRequest $request, Product $product)
     {
         $validatedData = $request->except('image');

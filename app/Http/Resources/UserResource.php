@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'address' => $this->address,
             'phone' => $this->phone,
-            'role_id' => $this->role_id,
+            'roles' => $this->roles->pluck('name'),
             'status' => $this->status,
         ];
     }

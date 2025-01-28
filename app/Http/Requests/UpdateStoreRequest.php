@@ -37,21 +37,21 @@ class UpdateStoreRequest extends FormRequest
                 'phone' => ['required'],
                 'user_id' => ['required'],
             ];
-        
         } else {
             return [
-                'name' => ['sometimes','required'],
-                'ruc' => ['sometimes','required'],
-                'location' => ['sometimes','required'],
-                'ubigeo' => ['sometimes','required'],
-                'department' => ['sometimes','required'],
-                'province' => ['sometimes','required'],
-                'district' => ['sometimes','required'],
-                'urbanization' => ['sometimes','required'],
-                'address' => ['sometimes','required'],
-                'sunat_local_code' => ['sometimes','required'],
-                'phone' => ['sometimes','required'],
-                'user_id' => ['sometimes','required'],
+                'name' => ['sometimes', 'required'],
+                'ruc' => ['sometimes', 'required'],
+                'location' => ['sometimes', 'required'],
+                'ubigeo' => ['sometimes', 'required'],
+                'department' => ['sometimes', 'required'],
+                'province' => ['sometimes', 'required'],
+                'district' => ['sometimes', 'required'],
+                'urbanization' => ['sometimes', 'required'],
+                'address' => ['sometimes', 'required'],
+                'sunat_local_code' => ['sometimes', 'required'],
+                'phone' => ['sometimes', 'required'],
+                'user_id' => ['sometimes', 'required'],
+
             ];
         }
     }

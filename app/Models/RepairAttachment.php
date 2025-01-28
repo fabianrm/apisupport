@@ -7,43 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class Repair extends Model
+class RepairAttachment extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'code',
-        'device_id',
-        'technician_id',
-        'store_id',
-        'priority',
-        'status',
-        'total_cost',
-        'assigned_at',
-        'resolved_at',
-        'closed_at',
-        'delivery_date'
-    ];
-
-    public function device()
-    {
-        return $this->belongsTo(Device::class);
-    }
-
-    public function technician()
-    {
-        return $this->belongsTo(User::class, 'technician_id');
-    }
+    protected $fillable = ['repair_id', 'file_path', 'store_id'];
 
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
 
-    public function history()
-    {
-        return $this->belongsTo(RepairHistory::class);
-    }
 
 
     /**
@@ -64,6 +37,7 @@ class Repair extends Model
         });
     }
 
+
     /**
      * Scopes para filtro por tienda de usuario
      */
@@ -77,4 +51,5 @@ class Repair extends Model
     {
         return static::withoutGlobalScope(StoreScope::class);
     }
+
 }
