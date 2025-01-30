@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('repair_attachments', function (Blueprint $table) {
+        Schema::create('repair_files', function (Blueprint $table) {
             $table->id();
             $table->foreignId('repair_id')->constrained('repairs')->onDelete('cascade');
             $table->string('file_path'); // direccion

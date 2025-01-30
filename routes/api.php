@@ -9,6 +9,7 @@ use App\Http\Controllers\DeviceTypeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RepairController;
+use App\Http\Controllers\RepairHistoryController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SunatUnitController;
 use App\Http\Controllers\SupplierController;
@@ -70,6 +71,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
 
         //Filter Technicians
         Route::post('users/technicians', [UserController::class, 'filterTechnicians']);
+
+        Route::patch('repairs/{repair}/changeAtention', [RepairController::class, 'changeAtention']); //Desactivar cliente
         
         //Customer
         Route::patch('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']); //Desactivar cliente
@@ -84,6 +87,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::apiResource('purchases', PurchaseController::class);
         //Repairs
         Route::apiResource('repairs', RepairController::class);
+        //Histories
+        Route::apiResource('histories', RepairHistoryController::class);
         //Users
         Route::apiResource('users', UserController::class);
     });

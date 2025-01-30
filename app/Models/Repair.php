@@ -45,6 +45,11 @@ class Repair extends Model
         return $this->belongsTo(RepairHistory::class);
     }
 
+    public function files()
+    {
+        return $this->hasMany(RepairFile::class);
+    }
+
 
     /**
      * Capturar usuario

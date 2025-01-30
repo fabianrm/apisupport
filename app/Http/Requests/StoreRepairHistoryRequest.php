@@ -24,7 +24,6 @@ class StoreRepairHistoryRequest extends FormRequest
         return [
             'repair_id'=>'required',
             'status'=>'required',
-            'changed_by'=>'required',
             'comment'=>'required',
             'store_id'=>'required',
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class RepairHistory extends Model
 {
     use HasFactory;
-    protected $fillable = ['repair_id', 'status', 'changed_by','comment', 'store_id'];
+    protected $fillable = ['repair_id', 'status', 'comment', 'store_id'];
 
     public function repairs()
     {
@@ -34,10 +34,12 @@ class RepairHistory extends Model
         static::creating(function ($model) {
             $model->created_by = Auth::id();
             $model->updated_by = Auth::id();
+            $model->changed_by = Auth::id();
         });
 
         static::updating(function ($model) {
             $model->updated_by = Auth::id();
+            $model->changed_by = Auth::id();
         });
     }
 

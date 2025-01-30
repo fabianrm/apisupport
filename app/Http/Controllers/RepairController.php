@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateRepairRequest;
 use App\Http\Resources\RepairCollection;
 use App\Http\Resources\RepairResource;
 use App\Models\Device;
+use App\Models\RepairFile;
 use App\Models\RepairHistory;
 use App\Services\UtilService;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,15 @@ class RepairController extends Controller
      */
     public function index()
     {
-        $repairs = Repair::with(['device', 'technician', 'store'])->get();
+        $user = auth()->user();
+        $query = Repair::with(['device', 'technician', 'store']);
+
+        // Verificamos si el usuario tiene el rol de admin
+        $isAdmin = $user->roles()->where('name', 'admin')->exists();
+        if (!$isAdmin) {
+            $query->where('technician_id', $user->id);
+        }
+        $repairs = $query->get();
         return new RepairCollection($repairs);
     }
 
@@ -53,7 +62,7 @@ class RepairController extends Controller
 
             RepairHistory::create([
                 'repair_id' => $repair->id,
-                'status' => 'asignado',
+                'status' => 'pendiente',
                 'comment' => 'Asignado el ' . $date,
                 'changed_by' => auth()->user()->id,
                 'store_id' => $repair->store_id,
@@ -63,14 +72,20 @@ class RepairController extends Controller
             $device = Device::findOrFail($repair['device_id']);
             $device->update(['status' => 'pendiente']);
 
-            /**
-             * TODO:
-             * despues de actualizar el estado quiero que me permita recibir archivos(fotos, pdf, etc),
-             * como evidencia del estado en que llega el dispositivo si en caso lo hubiera.
-             * Se deben subir a 'files/store/repairs'
-             */
+            //Registramos files si vienen
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $filePath = $file->storeAs('files/store/repairs', $fileName, 'public');
 
-           
+                    RepairFile::create([
+                        'repair_id' => $repair->id,
+                        'file_path' => $filePath,
+                        'store_id' => $repair->store_id,
+                    ]);
+                }
+            }
+
             DB::commit();
 
             $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
@@ -90,7 +105,8 @@ class RepairController extends Controller
      */
     public function show(Repair $repair)
     {
-        //
+        $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
+        return new RepairResource($repair);
     }
 
     /**
@@ -106,9 +122,47 @@ class RepairController extends Controller
      */
     public function update(UpdateRepairRequest $request, Repair $repair)
     {
-        $repair->update($request->validated());
-        $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
-        return new RepairResource($repair);
+        $validatedData = $request->validated();
+
+        try {
+            // Log::info($validatedData);
+
+            DB::beginTransaction();
+
+            // Crear historial si hay cambios en prioridad o técnico
+            if (
+                (isset($validatedData['priority']) && $validatedData['priority'] !== $repair->priority) ||
+                (isset($validatedData['technician_id']) && $validatedData['technician_id'] !== $repair->technician_id)
+            ) {
+                RepairHistory::create([
+                    'repair_id' => $repair->id,
+                    'status' => $repair->status,
+                    'comment' => (isset($validatedData['priority']) && $validatedData['priority'] !== $repair->priority) &&
+                        (isset($validatedData['technician_id']) && $validatedData['technician_id'] !== $repair->technician_id)
+                        ? 'Prioridad cambió a ' . $validatedData['priority'] . ' y ' . 'técnico cambió a ' . $validatedData['technician_id'] . ''
+                        : ($validatedData['priority'] !== $repair->priority
+                            ? 'Prioridad cambió a ' . $validatedData['priority']
+                            : 'Técnico cambió a ' . $validatedData['technician_id']),
+                    'changed_by' => auth()->user()->id,
+                    'store_id' => $repair->store_id,
+                ]);
+            }
+
+
+            $repair->load(['device', 'technician', 'store']);
+
+            DB::commit();
+
+            return new RepairResource($repair);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error actualizando reparación: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Error al actualizar la reparación.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -117,5 +171,53 @@ class RepairController extends Controller
     public function destroy(Repair $repair)
     {
         //
+    }
+
+    /**
+     * Cambiar a atendiendo
+     */
+    public function  changeAtention(UpdateRepairRequest $request, Repair $repair)
+    {
+
+        $validatedData = $request->validated();
+        try {
+            DB::beginTransaction();
+
+            //Caso estado atendiendo
+            if (isset($validatedData['status']) && $validatedData['status'] === 'atendiendo') {
+                Log::info('Actualizando');
+                RepairHistory::create([
+                    'repair_id' => $repair->id,
+                    'status' => $validatedData['status'],
+                    'comment' => 'Estado actualizado a ' . $validatedData['status'],
+                    'changed_by' => auth()->user()->id,
+                    'store_id' => $repair->store_id,
+                ]);
+
+                // Actualizar el estado del dispositivo si es necesario
+                if ($validatedData['status'] === 'atendiendo') {
+                    $repair->device->update(['status' => 'atendiendo']);
+                }
+            }
+
+            // Actualizar la reparación
+            $repair->update($validatedData);
+
+
+            DB::commit();
+            return response()->json([
+                'message' => 'Datos actualizados.',
+                'status' => '200'
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error actualizando reparación: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Error al actualizar la reparación.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

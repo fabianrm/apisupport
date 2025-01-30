@@ -28,18 +28,21 @@ class UpdateRepairRequest extends FormRequest
                 'technician_id' => 'required|exists:users,id',
                 'store_id' => 'required|exists:stores,id',
                 'status' => 'required|string',
-                'total_cost' => 'required|numeric',
+                'total_cost' => 'numeric',
                 'registered_at' => 'required',
                 'delivery_date' => ''
             ];
         } else {
             return [
+                'id' => 'sometimes|exists:repairs,id',
                 'device_id' => 'sometimes|exists:devices,id',
                 'technician_id' => 'sometimes|exists:users,id',
                 'store_id' => 'sometimes|exists:stores,id',
                 'status' => 'sometimes|string',
                 'total_cost' => 'sometimes|numeric',
-                'registered_at' => 'sometimes',
+                'priority' => 'sometimes|string',
+                'resolved_at' => 'sometimes',
+                'closed_at' => 'sometimes',
                 'delivery_date' => 'sometimes'
             ];
         }

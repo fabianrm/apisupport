@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('lock_code')->nullable();
             $table->text('problem_description')->nullable();
            
-            $table->enum('status', ['registrado', 'pendiente', 'atencion', 'espera_pase', 'validacion', 'solucionado', 'cancelada']);
+            $table->enum('status', ['registrado', 'pendiente', 'atendiendo', 'espera_pase', 'validacion', 'solucionado', 'cancelada']);
            
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade'); // Almacén
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');

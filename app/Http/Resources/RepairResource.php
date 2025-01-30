@@ -19,11 +19,14 @@ class RepairResource extends JsonResource
             'code' => $this->code,
             'device' => new DeviceResource($this->whenLoaded('device')),
             'technician' => new UserResource($this->whenLoaded('technician')),
-            'store' => new StoreResource($this->whenLoaded('store')),
+            'store' => new StoreSimpleResource($this->whenLoaded('store')),
             'status' => $this->status,
+            'priority' => $this->priority,
             'total_cost' => $this->total_cost,
-            'registered_at' => $this->registered_at,
-            'delivery_date' => $this->delivery_date
+            'assigned_at' => $this->assigned_at,
+            'resolved_at' => $this->resolved_at,
+            'delivery_date' => $this->delivery_date,
+            'updated_at' => $this->updated_at
         ];
     }
 }

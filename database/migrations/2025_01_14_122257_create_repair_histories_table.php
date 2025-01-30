@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('repair_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('repair_id')->constrained('repairs')->onDelete('cascade');
-            $table->enum('status', ['asignado', 'atencion', 'espera_pase', 'solucionado']);
+            $table->enum('status', ['pendiente', 'atendiendo', 'espera_pase', 'validacion', 'solucionado', 'cancelada']);
             $table->unsignedBigInteger('changed_by');
             $table->text('comment')->nullable();
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class RepairAttachment extends Model
+class RepairFile extends Model
 {
     use HasFactory;
     protected $fillable = ['repair_id', 'file_path', 'store_id'];

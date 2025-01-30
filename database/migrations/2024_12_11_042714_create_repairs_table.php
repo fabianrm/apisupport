@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('total_cost', 10, 2)->nullable();
             $table->timestamp('delivery_date')->nullable();
 
-            $table->enum('status', ['registrado', 'pendiente', 'atencion', 'espera_pase', 'validacion', 'solucionado', 'cancelada']);
+            $table->enum('status', ['registrado', 'pendiente', 'atendiendo', 'espera_pase', 'validacion', 'solucionado', 'cancelada']);
             $table->enum('priority', ['baja', 'normal', 'alta']);
 
             // Fechas de estado
