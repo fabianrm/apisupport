@@ -17,7 +17,6 @@ class AuthController extends Controller
 
 
     /** Login de Usuario */
-
     public function login(LoginRequest $request): JsonResponse
     {
         $validated = $request->validate([
@@ -38,15 +37,13 @@ class AuthController extends Controller
             return response()->json(['error' => 'No tienes acceso a esta tienda'], 403);
         }
 
-
-    
-        // $user = auth()->user();
-        // $storeId = $user->stores()->pluck('store_id')->first();
-        // Log::info('StoreUser', $storeId);
-
+        // Obtener permisos y filtrar los hijos
         $permissions = Permission::select('id', 'name', 'description', 'icon', 'route', 'parent_id', 'order', 'status')
-            ->with(['children' => function ($query) {
-                $query->select('id', 'name', 'description', 'icon', 'route', 'parent_id', 'order', 'status');
+            ->with(['children' => function ($query) use ($roleUser) {
+                $query->select('id', 'name', 'description', 'icon', 'route', 'parent_id', 'order', 'status')
+                    ->whereHas('roles', function ($subQuery) use ($roleUser) {
+                        $subQuery->where('roles.id', $roleUser->id);
+                    });
             }])
             ->whereHas('roles', function ($query) use ($roleUser) {
                 $query->where('roles.id', $roleUser->id);
@@ -54,6 +51,11 @@ class AuthController extends Controller
             ->where('parent_id', null)
             ->orderBy('order')
             ->get();
+
+        // Filtrar los permisos que no tienen hijos y convertir a array
+        $filteredPermissions = $permissions->filter(function ($permission) {
+            return $permission->children->isNotEmpty();
+        })->values(); // El método values() reindexará el array numéricamente
 
         $token = $user->createToken('userToken')->plainTextToken;
 
@@ -66,11 +68,10 @@ class AuthController extends Controller
                 'store_id' => $validated['store_id'],
                 'role' => $roleUser->name,
             ],
-            'permissions' => $permissions, // Menú jerárquico filtrado
+            'permissions' => $filteredPermissions, // Ahora será un array sin índices personalizados
         ]);
     }
-
-
+    
     //Refresh Token
 
     public function refreshToken(Request $request)

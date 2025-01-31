@@ -64,6 +64,9 @@ class RepairHistoryController extends Controller
                     case 'cerrado':
                         $validatedData['closed_at'] = Carbon::now();
                         break;
+                    case 'cancelada':
+                        $validatedData['closed_at'] = Carbon::now();
+                        break;
                 }
             }
 
