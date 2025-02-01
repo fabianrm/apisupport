@@ -75,8 +75,9 @@ class RepairController extends Controller
             //Registramos files si vienen
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
+                    $store = $repair->store_id;
                     $fileName = time() . '_' . $file->getClientOriginalName();
-                    $filePath = $file->storeAs('files/store/repairs', $fileName, 'public');
+                    $filePath = $file->storeAs('files/' . $store . '/repairs', $fileName, 'public');
 
                     RepairFile::create([
                         'repair_id' => $repair->id,
@@ -105,7 +106,7 @@ class RepairController extends Controller
      */
     public function show(Repair $repair)
     {
-        $repair->load(['device', 'technician', 'store']); // Carga las relaciones necesarias
+        $repair->load(['device', 'technician', 'store', 'history', 'history.updatedBy', 'history.changedBy', 'file', 'file.updatedBy',]); // Carga las relaciones necesarias
         return new RepairResource($repair);
     }
 
@@ -209,7 +210,6 @@ class RepairController extends Controller
                 'message' => 'Datos actualizados.',
                 'status' => '200'
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error actualizando reparación: ' . $e->getMessage());

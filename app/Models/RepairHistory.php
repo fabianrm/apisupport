@@ -12,15 +12,33 @@ class RepairHistory extends Model
     use HasFactory;
     protected $fillable = ['repair_id', 'status', 'comment', 'store_id'];
 
-    public function repairs()
+    public function repair()
     {
-        return $this->hasMany(Repair::class);
+        return $this->belongsTo(Repair::class);
     }
 
 
     public function store()
     {
         return $this->belongsTo(Store::class);
+    }
+
+
+    // Relación con el modelo User para el usuario que creó el dispositivo
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    // Relación con el modelo User para el usuario que actualizó el dispositivo
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function changedBy()
+    {
+        return $this->belongsTo(User::class, 'changed_by');
     }
 
     /**

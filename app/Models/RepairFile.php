@@ -17,6 +17,24 @@ class RepairFile extends Model
         return $this->belongsTo(Store::class);
     }
 
+    public function repair()
+    {
+        return $this->belongsTo(Repair::class);
+    }
+
+    // Relación con el modelo User para el usuario que creó el dispositivo
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    // Relación con el modelo User para el usuario que actualizó el dispositivo
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+
 
 
     /**

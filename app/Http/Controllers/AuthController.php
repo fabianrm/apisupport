@@ -53,9 +53,12 @@ class AuthController extends Controller
             ->get();
 
         // Filtrar los permisos que no tienen hijos y convertir a array
-        $filteredPermissions = $permissions->filter(function ($permission) {
-            return $permission->children->isNotEmpty();
-        })->values(); // El método values() reindexará el array numéricamente
+        // $filteredPermissions = $permissions->filter(function ($permission) {
+        //     return $permission->children->isNotEmpty();
+        // })->values(); // El método values() reindexará el array numéricamente
+
+        // Ya no filtramos los permisos sin hijos
+        $filteredPermissions = $permissions->values();
 
         $token = $user->createToken('userToken')->plainTextToken;
 

@@ -40,13 +40,12 @@ class RepairHistoryController extends Controller
             DB::beginTransaction();
             $history = RepairHistory::create($validatedData);
 
-            //TODO:Subida de archivos
-
             // Procesar archivos nuevos si existen
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
+                    $store = $history->store_id;
                     $fileName = time() . '_' . $file->getClientOriginalName();
-                    $filePath = $file->storeAs('files/store/repairs', $fileName, 'public');
+                    $filePath = $file->storeAs('files/' . $store . '/repairs', $fileName, 'public');
 
                     RepairFile::create([
                         'repair_id' => $history->repair_id,
@@ -80,10 +79,6 @@ class RepairHistoryController extends Controller
             // Actualizar el estado del dispositivo,
             $device = Device::findOrFail($repair['device_id']);
             $device->update(['status' => $history->status]);
-
-
-
-
 
             DB::commit();
             return response()->json([

@@ -26,7 +26,9 @@ class RepairResource extends JsonResource
             'assigned_at' => $this->assigned_at,
             'resolved_at' => $this->resolved_at,
             'delivery_date' => $this->delivery_date,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'history' => HistoryResource::collection($this->whenLoaded('history')),
+            'files' => RepairFileResource::collection($this->whenLoaded('file')),
         ];
     }
 }

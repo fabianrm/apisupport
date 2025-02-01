@@ -42,13 +42,16 @@ class Repair extends Model
 
     public function history()
     {
-        return $this->belongsTo(RepairHistory::class);
+        return $this->hasMany(RepairHistory::class);
+
     }
 
-    public function files()
+    public function file()
     {
         return $this->hasMany(RepairFile::class);
     }
+
+
 
 
     /**

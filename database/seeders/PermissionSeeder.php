@@ -16,7 +16,7 @@ class PermissionSeeder extends Seeder
         $permissions = [
             ['name' => 'Dashboard', 'description' => 'Panel general', 'icon' => 'dashboard', 'route' => '/dashboard', 'parent_id' => null, 'order' => 0, 'status' => true],
             ['name' => 'Serv. Técnico', 'description' => 'Servicio Técnico', 'icon' => 'manage_accounts', 'route' => 'null', 'parent_id' => null, 'order' => 1, 'status' => true],
-            ['name' => 'Listar Reparaciones', 'description' => 'Lista las reparaciones', 'icon' => 'lists', 'route' => '/support/repairs/list', 'parent_id' => 2, 'order' => 0, 'status' => true],
+            ['name' => 'Listar Reparaciones', 'description' => 'Listado de Reparaciones', 'icon' => 'lists', 'route' => '/support/repairs/list', 'parent_id' => 2, 'order' => 0, 'status' => true],
             ['name' => 'Nueva Reparación', 'description' => 'Registra nueva reparación', 'icon' => 'add_notes', 'route' => '/support/repairs/new-repair', 'parent_id' => 2, 'order' => 1, 'status' => true],
             ['name' => 'Listar Dispositivos', 'description' => 'Lista dispositivos de clientes', 'icon' => 'vibration', 'route' => '/support/devices/list', 'parent_id' => 2, 'order' => 2, 'status' => true],
             ['name' => 'Registrar Dispositivo', 'description' => 'Registra dispositivo de cliente', 'icon' => 'phone_iphone', 'route' => '/support/devices/new-device', 'parent_id' => 2, 'order' => 3, 'status' => true],
