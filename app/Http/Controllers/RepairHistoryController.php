@@ -11,9 +11,21 @@ use App\Models\RepairFile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class RepairHistoryController extends Controller
 {
+
+    private ImageManager $imageManager;
+
+    public function __construct()
+    {
+        // Inicializar ImageManager con el driver GD
+        $this->imageManager = new ImageManager(new Driver());
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -45,7 +57,38 @@ class RepairHistoryController extends Controller
                 foreach ($request->file('files') as $file) {
                     $store = $history->store_id;
                     $fileName = time() . '_' . $file->getClientOriginalName();
-                    $filePath = $file->storeAs('files/' . $store . '/repairs', $fileName, 'public');
+                   
+                    $fileType = $file->getClientOriginalExtension();
+
+                    // Verificar si es una imagen
+                    if (in_array(strtolower($fileType), ['jpg', 'jpeg', 'png', 'gif'])) {
+                        // Comprimir imagen
+                        $image = $this->imageManager->read($file->getRealPath());
+                     
+                        // Redimensionar si la imagen es muy grande
+                        if ($image->width() > 1920) {
+                            $image->scale(width: 1920);
+                        }
+
+                        $filePath = 'files/' . $store . '/repairs/' . $fileName;
+
+                        // Codificar y guardar la imagen con calidad específica
+                        if ($fileType === 'png') {
+                            $encodedImage = $image->toPng()->toFilePointer();
+                        } else {
+                            $encodedImage = $image->toJpeg(75)->toFilePointer();
+                        }
+                        // Guardar el archivo
+                        Storage::disk('public')->put(
+                            $filePath,
+                            $encodedImage
+                        );
+                        // Liberar recursos
+                        fclose($encodedImage);
+                    } else {
+                        // Si no es una imagen, guardar el archivo normal
+                        $filePath = $file->storeAs('files/' . $store . '/repairs', $fileName, 'public');
+                    }
 
                     RepairFile::create([
                         'repair_id' => $history->repair_id,

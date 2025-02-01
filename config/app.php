@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
+use Intervention\Image\ImageServiceProvider;
+use Intervention\Image\Facades\Image;
 
 return [
 
@@ -157,10 +159,9 @@ return [
 
     'providers' => ServiceProvider::defaultProviders()->merge([
         /*
-         * Package Service Providers...
-         */
-
-        /*
+         * Package Service Providers..
+         /*
+         Intervention\Image\ImageServiceProvider::class,
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
