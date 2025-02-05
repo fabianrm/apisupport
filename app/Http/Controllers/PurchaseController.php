@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Purchase;
 use App\Http\Requests\StorePurchaseRequest;
 use App\Http\Resources\PurchaseCollection;
+use App\Http\Resources\PurchaseResource;
 use App\Models\InventoryMovement;
 use App\Models\Product;
 use App\Models\PurchaseDetail;
@@ -20,7 +21,7 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        $purchases = Purchase::all();
+        $purchases = Purchase::with(['supplier', 'store', 'details', 'details.store', 'details.product'])->get();
         return new PurchaseCollection($purchases);
     }
 
@@ -47,13 +48,12 @@ class PurchaseController extends Controller
             DB::beginTransaction();
 
             // Calcular subtotal, IGV y total en base a los detalles
-            $subtotal = 0;
+            $total = 0;
             foreach ($detailsRequest as $detail) {
-                $subtotal += $detail['purchase_price'] * $detail['quantity'];
+                $total += $detail['purchase_price'] * $detail['quantity'];
             }
-
-            $igv = $subtotal * 0.18; // 18% del subtotal
-            $total = $subtotal + $igv;
+            $igv = $total -($total / 1.18); // 18% del subtotal
+            $subtotal = $total - $igv; //
 
             // Crear la compra principal con los valores calculados
             $purchase = Purchase::create(array_merge($validatedData, [
@@ -91,6 +91,7 @@ class PurchaseController extends Controller
                     'store_id' => $detail['store_id'],
                     'movement_type_id' => 1, // Tipo de movimiento "entrada"
                     'quantity' => $detail['quantity'],
+                    'remaining_quantity' => $detail['quantity'],
                     'unit_price' => $detail['purchase_price'],
                     'description' => 'Ingreso por compra #' . $purchase->id,
                     'created_by' => auth()->user()->id,
@@ -100,10 +101,15 @@ class PurchaseController extends Controller
                 // Actualizar el current_stock del producto
                 $product = Product::findOrFail($detail['product_id']);
 
-                // Calcular el stock actual desde movimientos relacionados al producto
-                $currentStock = PurchaseDetail::where('product_id', $product->id)
-                    ->join('inventory_movements', 'purchase_details.id', '=', 'inventory_movements.purchase_detail_id')
-                    ->sum('inventory_movements.quantity');
+                $currentStock = $product->purchaseDetails()
+                    ->with('inventoryMovements')
+                    ->get()
+                    ->sum(function ($purchaseDetail) {
+                        return $purchaseDetail->inventoryMovements->sum('quantity');
+                    });
+
+
+                // Actualizar el stock actual del producto
                 $product->update(['current_stock' => $currentStock]);
             }
 
@@ -111,7 +117,7 @@ class PurchaseController extends Controller
 
             return response()->json([
                 'message' => 'Compra registrada exitosamente',
-                'purchase' => $purchase->load(['details']),
+                'purchase' => $purchase->load(['supplier', 'details', 'details.store', 'details.product']),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -128,7 +134,8 @@ class PurchaseController extends Controller
      */
     public function show(Purchase $purchase)
     {
-        //
+        $purchase->load(['supplier', 'store', 'details', 'details.store', 'details.product']); // Carga las relaciones necesarias
+        return new PurchaseResource($purchase);
     }
 
     /**
@@ -150,9 +157,8 @@ class PurchaseController extends Controller
         // Validar que no haya movimientos de inventario distintos a los de entrada por esta compra
         foreach ($purchase->details as $detail) {
             $hasOtherMovements = InventoryMovement::where('purchase_detail_id', $detail->id)
-            ->where('movement_type_id', '!=', 1) // Suponiendo que "1" es el tipo de movimiento "entrada"
-            ->exists();
-
+                ->where('movement_type_id', '!=', 1) // Suponiendo que "1" es el tipo de movimiento "entrada"
+                ->exists();
             if ($hasOtherMovements) {
                 return response()->json([
                     'message' => 'No se puede actualizar la orden de compra porque hay movimientos de inventario asociados a los productos.',
@@ -168,7 +174,6 @@ class PurchaseController extends Controller
                 'purchase_date' => 'required|date',
                 'invoice_number' => 'required|string|unique:purchases,invoice_number,' . $id,
                 'store_id' => 'required'
-
             ]
         )->validate();
 
@@ -192,16 +197,13 @@ class PurchaseController extends Controller
         )->validate();
 
         DB::beginTransaction();
-
-        Log::info('Details:', ['details' => $validatedDetails]);
-
         try {
             // Calcular subtotal, IGV y total a partir de los detalles
-            $subtotal = collect($validatedDetails['details'])->sum(function ($detail) {
+            $total = collect($validatedDetails['details'])->sum(function ($detail) {
                 return $detail['purchase_price'] * $detail['quantity'];
             });
-            $igv = $subtotal * 0.18; // 18% de IGV
-            $total = $subtotal + $igv;
+            $igv = $total - ($total / 1.18);
+            $subtotal = $total - $igv;
 
             // Actualizar cabecera
             $purchase->update(array_merge($validatedPurchase, [
@@ -217,6 +219,17 @@ class PurchaseController extends Controller
 
             // Eliminar detalles que no están en la solicitud
             $detailsToDelete = array_diff($existingDetailIds, $newDetailIds);
+
+            // Obtener los detalles que se van a eliminar
+            $deletedDetails = PurchaseDetail::whereIn('id', $detailsToDelete)->get();
+
+            // Restar la cantidad de los detalles eliminados del current_stock del producto
+            foreach ($deletedDetails as $deletedDetail) {
+                $product = Product::findOrFail($deletedDetail->product_id);
+                $product->decrement('current_stock', $deletedDetail->quantity);
+            }
+
+            // Eliminar los detalles
             PurchaseDetail::whereIn('id', $detailsToDelete)->delete();
 
             // Crear o actualizar detalles
@@ -225,6 +238,7 @@ class PurchaseController extends Controller
                     ['id' => $detail['id'] ?? null],
                     array_merge($detail, [
                         'purchase_id' => $purchase->id,
+                        'remaining_quantity' => $detail['quantity'],
                         'updated_by' => auth()->user()->id,
                     ])
                 );
@@ -244,16 +258,21 @@ class PurchaseController extends Controller
 
                 // Actualizar el current_stock del producto
                 $product = Product::findOrFail($detail['product_id']);
-                $currentStock = InventoryMovement::where('product_id', $product->id)
-                ->sum('quantity'); // Sumar todas las cantidades de los movimientos relacionados
+                $currentStock = $product->purchaseDetails()
+                    ->with('inventoryMovements')
+                    ->get()
+                    ->sum(function ($purchaseDetail) {
+                        return $purchaseDetail->inventoryMovements->sum('quantity');
+                    });
+
+                // Actualizar el stock actual del producto
                 $product->update(['current_stock' => $currentStock]);
             }
 
             DB::commit();
-
             return response()->json([
                 'message' => 'Compra actualizada correctamente',
-                'purchase' => $purchase->load(['details']),
+                'purchase' => $purchase->load(['supplier', 'details', 'details.store', 'details.product']),
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -266,7 +285,6 @@ class PurchaseController extends Controller
             ], 500);
         }
     }
-
     /**
      * Remove the specified resource from storage.
      */

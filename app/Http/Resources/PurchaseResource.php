@@ -15,17 +15,20 @@ class PurchaseResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=> $this->id,
-            'supplier'=> new SupplierResource($this->whenLoaded('supplier')),
-            'purchase_date'=> $this->purchase_date,
-            'invoice_number'=> $this->invoice_number,
-            'subtotal'=> $this->subtotal,
-            'igv'=> $this->igv,
-            'total'=> $this->total,
-            'created_at'=> $this->created_at,
-            'created_by'=> $this->created_by,
-            'status'=> $this->status
-            
+            'id' => $this->id,
+            'supplier' => new SupplierResource($this->whenLoaded('supplier')),
+            'store' => new StoreSimpleResource($this->whenLoaded('store')),
+            'purchase_date' => $this->purchase_date,
+            'document' => $this->document,
+            'invoice_number' => $this->invoice_number,
+            'subtotal' => $this->subtotal,
+            'igv' => $this->igv,
+            'total' => $this->total,
+            'created_at' => $this->created_at,
+            'created_by' => $this->created_by,
+            'status' => $this->status == 1 ? 'activo' : 'suspendido',
+            'details' => PurchaseDetailResource::collection($this->whenLoaded('details')),
+
         ];
     }
 }

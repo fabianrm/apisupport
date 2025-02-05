@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade'); // Proveedor
             $table->date('purchase_date'); // Fecha de compra
+            $table->enum('document', ['boleta', 'factura', 'nea']);
+            $table->string('invoice_number')->nullable(); // Número de factura
             $table->decimal('subtotal', 10, 2); // Total de la compra
             $table->decimal('igv', 10, 2); // Total de la compra
             $table->decimal('total', 10, 2); // Total de la compra
-            $table->string('invoice_number')->nullable(); // Número de factura
             $table->boolean('status')->default(true);
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade'); // Almacén
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');

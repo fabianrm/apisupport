@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
-use Intervention\Image\ImageServiceProvider;
-use Intervention\Image\Facades\Image;
 
 return [
 

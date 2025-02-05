@@ -24,7 +24,8 @@ class StorePurchaseRequest extends FormRequest
         return [
             'supplier_id' => 'required|exists:suppliers,id',
             'purchase_date' => 'required|date',
-            'invoice_number' => 'required|string|unique:purchases,invoice_number',
+            'document' => 'required|string|',
+            'invoice_number' => 'required|string|',
             'subtotal' => 'numeric',
             'igv' => 'numeric',
             'total' => 'numeric',

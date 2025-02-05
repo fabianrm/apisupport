@@ -33,6 +33,11 @@ class Product extends Model
         return $this->belongsTo(SunatUnit::class, "sunat_unit","code");
     }
 
+    public function purchaseDetails()
+    {
+        return $this->hasMany(PurchaseDetail::class);
+    }
+
 
     /**
      * Capturar usuario
@@ -55,16 +60,16 @@ class Product extends Model
     /**
      * Scopes para filtro por tienda de usuario
      */
-    protected static function booted()
-    {
-        static::addGlobalScope(new StoreScope);
-    }
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope(new StoreScope);
+    // }
 
     // Si necesitas consultas sin el filtro global
-    public static function withoutStoreScope()
-    {
-        return static::withoutGlobalScope(StoreScope::class);
-    }
+    // public static function withoutStoreScope()
+    // {
+    //     return static::withoutGlobalScope(StoreScope::class);
+    // }
 
  
 }

@@ -26,6 +26,7 @@ class UpdatePurchaseRequest extends FormRequest
             return [
                 'supplier_id' => ['required'],
                 'purchase_date' => ['required'],
+                'document' => ['required'],
                 'invoice_number' => ['required'],
                 'subtotal' => ['required'],
                 'igv' => ['required'],
@@ -36,6 +37,7 @@ class UpdatePurchaseRequest extends FormRequest
             return [
                 'supplier_id' => ['sometimes','required'],
                 'purchase_date' => ['sometimes','required'],
+                'document' => ['sometimes', 'required'],
                 'invoice_number' => ['sometimes','required'],
                 'subtotal' => ['sometimes','required'],
                 'igv' => ['sometimes','required'],

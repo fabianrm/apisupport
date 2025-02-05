@@ -7,20 +7,26 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-
-
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //$products = Product::all();
-        $products = Product::with(['category', 'brand', 'sunatUnit', 'store'])->get();
+        $searchQuery = $request->input('q');
+        $query = Product::query();
+        // Aplicar filtro por nombre si existe el parámetro 'q'
+        if ($searchQuery) {
+            $query->where('name', 'like', '%' . $searchQuery . '%');
+        }
+        $products = $query->get();
+        $products->load('category', 'brand', 'sunatUnit', 'store');
+        // Retornar la colección
         return new ProductCollection($products);
     }
 
@@ -43,9 +49,11 @@ class ProductController extends Controller
 
         // Verifica si se ha subido un archivo de imagen
         if ($request->hasFile('image')) {
+            $store = $product->store_id;
             $image = $request->file('image');
             $imageName = $product->id . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('images/products', $imageName, 'public');
+            $imagePath = $image->storeAs('images/' . $store . '/products', $imageName, 'public');
+
             $product->update(['image' => $imagePath]); // Actualiza la ruta de la imagen en la BD
         }else{
             $product->update(['image' => 'images/products/no-image.jpg']);

@@ -49,15 +49,15 @@ class Customer extends Model
     /**
      * Scopes para filtro por tienda de usuario
      */
-    protected static function booted()
-    {
-        static::addGlobalScope(new StoreScope);
-    }
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope(new StoreScope);
+    // }
 
-    // Si necesitas consultas sin el filtro global
-    public static function withoutStoreScope()
-    {
-        return static::withoutGlobalScope(StoreScope::class);
-    }
+     // Si necesitas consultas sin el filtro global
+    // public static function withoutStoreScope()
+    // {
+    //     return static::withoutGlobalScope(StoreScope::class);
+    // }
 
 }

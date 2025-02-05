@@ -27,7 +27,7 @@ class StorePurchaseDetailRequest extends FormRequest
             'purchase_price' => 'required|numeric',
             'sale_price' => 'required|numeric',
             'quantity' => 'required|integer|min:1',
-            'remaining_quantity' => '',
+            'remaining_quantity' => 'required|integer|min:1',
             'model' => '',
             'serial' => '',
             'imei' => '',
