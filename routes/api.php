@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RepairController;
 use App\Http\Controllers\RepairHistoryController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SunatUnitController;
 use App\Http\Controllers\SupplierController;
@@ -89,6 +90,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::apiResource('repairs', RepairController::class);
         //Histories
         Route::apiResource('histories', RepairHistoryController::class);
+        //Sails
+        Route::apiResource('sales', SaleController::class);
         //Users
         Route::apiResource('users', UserController::class);
     });
