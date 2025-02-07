@@ -25,7 +25,7 @@ class StoreCustomerRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'document_type' => ['required', Rule::in(['dni', 'ruc', 'ce'])],
+            'document_id' => ['required'],
             'document_number' => ['required', 'unique:customers'],
             'email' => ['required', 'email', 'unique:customers'],
             'phone' => [''],
@@ -46,8 +46,7 @@ class StoreCustomerRequest extends FormRequest
             'document_number.unique' => 'El Documento ya se encuentra registrado.',
             'email.unique' => 'El email ya se encuentra registrado.',
             'store_id.required' => 'El id de tienda es requerido.',
-            
+
         ];
     }
-
 }

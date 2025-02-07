@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('document_type', ['dni', 'ruc', 'ce'])->default('dni'); // Tipo Documento identidad
+            $table->string('document_id', 1)->default('1'); // Tipo de operación (Catálogo 51)
             $table->string('document_number')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
@@ -23,6 +23,9 @@ return new class extends Migration
             $table->boolean('status')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
+
+            $table->foreign('document_id')->references('code')->on('sunat_document_ids')->onDelete('restrict');
+
             $table->timestamps();
         });
     }

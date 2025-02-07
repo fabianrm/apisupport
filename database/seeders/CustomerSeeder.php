@@ -14,7 +14,7 @@ class CustomerSeeder extends Seeder
     public function run(): void
     {
         $customers = [
-            ['name' => 'Lorenzo', 'document_type' => 'dni','document_number' => '45345343', 'email' => 'no@email.com', 'phone' => '999999999', 'address' => '-', 'status' => true, 'store_id' => 1],
+            ['name' => 'Lorenzo', 'document_id' => '1','document_number' => '45345343', 'email' => 'no@email.com', 'phone' => '999999999', 'address' => '-', 'status' => true, 'store_id' => 1],
         ];
 
         foreach ($customers as $customer) {

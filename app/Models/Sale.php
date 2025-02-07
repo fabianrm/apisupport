@@ -31,13 +31,21 @@ class Sale extends Model
         'issued_at',
         'xml_path',
         'cdr_path',
+        'code_legend',
+        'value_legend',
         'status',
         'hash',
-        'created_by',
-        'updated_by',
+        'active',
+
     ];
 
     // Relaciones
+
+    public function details()
+    {
+        return $this->hasMany(SaleDetail::class);
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

@@ -31,6 +31,7 @@ class CustomerController extends Controller
 
         // Obtener los resultados
         $customers = $query->get();
+        $customers->load('documentId');
 
         // Retornar la colección
         return new CustomerCollection($customers);
@@ -61,6 +62,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
+        $customer->load('documentId');
         return new CustomerResource($customer);
     }
 

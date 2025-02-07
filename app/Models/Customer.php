@@ -11,7 +11,7 @@ class Customer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'document_type', 'document_number', 'email', 'phone', 'address', 'store_id', 'status'];
+    protected $fillable = ['name', 'document_id', 'document_number', 'email', 'phone', 'address', 'store_id', 'status'];
 
     public function devices()
     {
@@ -27,6 +27,12 @@ class Customer extends Model
     {
         return $this->belongsTo(Store::class);
     }
+
+    public function documentId()
+    {
+        return $this->belongsTo(SunatDocumentId::class, 'document_id', 'code');
+    }
+
 
     /**
      * Capturar usuario

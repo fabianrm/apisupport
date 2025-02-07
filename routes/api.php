@@ -12,6 +12,7 @@ use App\Http\Controllers\RepairController;
 use App\Http\Controllers\RepairHistoryController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\SunatDocumentIdController;
 use App\Http\Controllers\SunatUnitController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -90,8 +91,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::apiResource('repairs', RepairController::class);
         //Histories
         Route::apiResource('histories', RepairHistoryController::class);
-        //Sails
+        //Sales
         Route::apiResource('sales', SaleController::class);
+        //Documents IDS
+        Route::apiResource('documents-ids', SunatDocumentIdController::class);
         //Users
         Route::apiResource('users', UserController::class);
     });

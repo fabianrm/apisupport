@@ -26,7 +26,7 @@ class UpdateCustomerRequest extends FormRequest
         if ($method === "PUT") {
             return [
                 'name' => ['required'],
-                'document_type' => ['required', Rule::in(['dni', 'ruc', 'ce'])],
+                'document_id' => ['required' ],
                 'document_number' => ['required', 'unique:customers'],
                 'email' => ['required', 'email', 'unique:customers'],
                 'phone' => [''],
@@ -36,7 +36,7 @@ class UpdateCustomerRequest extends FormRequest
         } else {
             return [
                 'name' => ['sometimes', 'required'],
-                'document_type' => ['sometimes', 'required'],
+                'document_id' => ['sometimes', 'required'],
                 'document_number' => ['sometimes', 'required',],
                 'email' => ['sometimes','required', 'email',],
                 'phone' => ['sometimes', ''],

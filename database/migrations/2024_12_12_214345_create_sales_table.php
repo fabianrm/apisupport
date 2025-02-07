@@ -41,12 +41,12 @@ return new class extends Migration
             $table->string('cdr_path')->nullable(); // Ruta del CDR recibido
             $table->enum('status', ['pending', 'accepted', 'rejected', 'voided'])->default('pending'); // Estado
             $table->string('hash')->nullable(); // Hash generado para la firma digital
+            $table->string('code_legend')->default('1000'); // Monto en letras ' Catalogo 52
+            $table->string('value_legend')->nullable(); // Monto en letras ' Catalogo 52
             $table->boolean('active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();
-
-            //TODO: LEGEND
 
             // Relación con las tablas normalizadas
             $table->foreign('sunat_operation_type')->references('code')->on('sunat_operation_types')->onDelete('restrict');

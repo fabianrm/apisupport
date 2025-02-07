@@ -15,17 +15,17 @@ class CustomerResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=> $this->id,
-            'name'=> $this->name,
-            'document_type'=> $this->document_type,
-            'document_number'=> $this->document_number,
-            'email'=> $this->email,
-            'phone'=> $this->phone,
-            'address'=> $this->address,
-            'store_id'=> $this->store_id,
-            'status'=> $this->status,
-            'created_by'=> $this->created_by,
-            'updated_by'=> $this->updated_by,
+            'id' => $this->id,
+            'name' => $this->name,
+            'documentID' => new DocumentIDResource($this->whenLoaded('documentId')),
+            'document_number' => $this->document_number,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'address' => $this->address,
+            'store_id' => $this->store_id,
+            'status' => $this->status,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
         ];
     }
 
