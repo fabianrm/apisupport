@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SunatOperationType;
 use App\Http\Requests\StoreSunatOperationTypeRequest;
 use App\Http\Requests\UpdateSunatOperationTypeRequest;
+use App\Http\Resources\OperationTypeCollection;
 
 class SunatOperationTypeController extends Controller
 {
@@ -13,7 +14,8 @@ class SunatOperationTypeController extends Controller
      */
     public function index()
     {
-        //
+        $operations = SunatOperationType::all();
+        return new OperationTypeCollection($operations);
     }
 
     /**

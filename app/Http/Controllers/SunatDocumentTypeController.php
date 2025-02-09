@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SunatDocumentType;
 use App\Http\Requests\StoreSunatDocumentTypeRequest;
 use App\Http\Requests\UpdateSunatDocumentTypeRequest;
+use App\Http\Resources\DocumentTypeCollection;
 
 class SunatDocumentTypeController extends Controller
 {
@@ -13,7 +14,8 @@ class SunatDocumentTypeController extends Controller
      */
     public function index()
     {
-        //
+        $documents = SunatDocumentType::all();
+        return new DocumentTypeCollection($documents);
     }
 
     /**

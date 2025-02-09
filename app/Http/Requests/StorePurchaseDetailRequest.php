@@ -31,7 +31,8 @@ class StorePurchaseDetailRequest extends FormRequest
             'model' => '',
             'serial' => '',
             'imei' => '',
-            'ubication_detail' => 'string'
+            'ubication_detail' => 'string',
+            'status' => 'string',
         ];
     }
 

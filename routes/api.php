@@ -12,10 +12,15 @@ use App\Http\Controllers\RepairController;
 use App\Http\Controllers\RepairHistoryController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\SunatCurrencyController;
 use App\Http\Controllers\SunatDocumentIdController;
+use App\Http\Controllers\SunatDocumentTypeController;
+use App\Http\Controllers\SunatOperationTypeController;
 use App\Http\Controllers\SunatUnitController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
+use App\Models\SunatDocumentType;
+use App\Models\SunatOperationType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -95,6 +100,13 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::apiResource('sales', SaleController::class);
         //Documents IDS
         Route::apiResource('documents-ids', SunatDocumentIdController::class);
+        //Tipo Operacion
+        Route::apiResource('operations-type', SunatOperationTypeController::class);
+        //Tipo Documento
+        Route::apiResource('documents-type', SunatDocumentTypeController::class);
+        //Tipo Moneda
+        Route::apiResource('currencies', SunatCurrencyController::class);
+
         //Users
         Route::apiResource('users', UserController::class);
     });

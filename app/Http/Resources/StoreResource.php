@@ -27,6 +27,7 @@ class StoreResource extends JsonResource
             'address' => $this->address,
             'sunat_local_code' => $this->sunat_local_code,
             'phone' => $this->phone,
+            'image' => asset('storage/' . $this->image),
             'user_id' => $this->user_id,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,

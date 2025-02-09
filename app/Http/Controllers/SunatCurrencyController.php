@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SunatCurrency;
 use App\Http\Requests\StoreSunatCurrencyRequest;
 use App\Http\Requests\UpdateSunatCurrencyRequest;
+use App\Http\Resources\CurrencyCollection;
 
 class SunatCurrencyController extends Controller
 {
@@ -13,7 +14,8 @@ class SunatCurrencyController extends Controller
      */
     public function index()
     {
-        //
+        $currencies = SunatCurrency::all();
+        return new CurrencyCollection($currencies);
     }
 
     /**

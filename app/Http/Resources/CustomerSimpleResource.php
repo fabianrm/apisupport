@@ -17,7 +17,7 @@ class CustomerSimpleResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'document_type' => $this->document_type,
+            'documentID' => new DocumentIDResource($this->whenLoaded('documentId')),
             'document_number' => $this->document_number,
             'email' => $this->email,
             'phone' => $this->phone,

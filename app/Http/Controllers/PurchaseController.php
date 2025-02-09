@@ -52,7 +52,7 @@ class PurchaseController extends Controller
             foreach ($detailsRequest as $detail) {
                 $total += $detail['purchase_price'] * $detail['quantity'];
             }
-            $igv = $total -($total / 1.18); // 18% del subtotal
+            $igv = $total - ($total / 1.18); // 18% del subtotal
             $subtotal = $total - $igv; //
 
             // Crear la compra principal con los valores calculados
@@ -192,6 +192,7 @@ class PurchaseController extends Controller
                 'details.*.imei' => '',
                 'details.*.color' => '',
                 'details.*.capacity' => '',
+                'details.*.status' => 'required',
                 'details.*.ubication_detail' => 'string'
             ]
         )->validate();
@@ -251,7 +252,7 @@ class PurchaseController extends Controller
                         'movement_type_id' => 1, // Suponiendo que 1 es tipo "entrada"
                         'quantity' => $detail['quantity'],
                         'unit_price' => $detail['purchase_price'],
-                        'description' => 'Actualización de compra',
+                        'description' => 'Actualización de compra' . $purchase->id,
                         'updated_by' => auth()->user()->id,
                     ]
                 );

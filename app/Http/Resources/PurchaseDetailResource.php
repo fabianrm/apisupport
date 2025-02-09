@@ -27,7 +27,8 @@ class PurchaseDetailResource extends JsonResource
             'imei' => $this->imei,
             'color' => $this->color,
             'capacity' => $this->capacity,
-            'ubication_detail' => $this->ubication_detail
+            'ubication_detail' => $this->ubication_detail,
+            'status' => $this->status,
         ];
     }
 }

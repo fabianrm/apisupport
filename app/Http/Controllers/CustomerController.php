@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerCollection;
 use App\Http\Resources\CustomerResource;
+use App\Http\Resources\CustomerSimpleResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -63,7 +64,7 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         $customer->load('documentId');
-        return new CustomerResource($customer);
+        return new CustomerSimpleResource($customer);
     }
 
     /**

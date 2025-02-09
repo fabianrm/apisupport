@@ -16,25 +16,24 @@ class Sale extends Model
         'store_id',
         'user_id',
         'ubl_version',
-        'sunat_operation_type',
-        'sunat_document_type',
-        'sunat_payment_method',
-        'series',
-        'correlative',
-        'sunat_currency',
+        'tipo_operacion',
+        'tipo_documento',
+        'forma_pago',
+        'serie',
+        'correlativo',
+        'tipo_moneda',
         'mto_oper_gravadas',
         'mto_igv',
-        'total_taxes',
+        'total_impuestos',
         'valor_venta',
         'subtotal',
-        'total',
-        'issued_at',
+        'mto_imp_venta',
+        'fecha_emision',
         'xml_path',
         'cdr_path',
         'code_legend',
         'value_legend',
         'status',
-        'hash',
         'active',
 
     ];
@@ -73,22 +72,22 @@ class Sale extends Model
 
     public function operationType()
     {
-        return $this->belongsTo(SunatOperationType::class, 'sunat_operation_type', 'code');
+        return $this->belongsTo(SunatOperationType::class, 'tipo_operacion', 'code');
     }
 
     public function documentType()
     {
-        return $this->belongsTo(SunatDocumentType::class, 'sunat_document_type', 'code');
+        return $this->belongsTo(SunatDocumentType::class, 'tipo_documento', 'code');
     }
 
     public function paymentMethod()
     {
-        return $this->belongsTo(SunatPaymentMethod::class, 'sunat_payment_method', 'code');
+        return $this->belongsTo(SunatPaymentMethod::class, 'forma_pago', 'code');
     }
 
     public function currency()
     {
-        return $this->belongsTo(SunatCurrency::class, 'sunat_currency', 'code');
+        return $this->belongsTo(SunatCurrency::class, 'tipo_moneda', 'code');
     }
 
     /**

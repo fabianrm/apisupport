@@ -24,17 +24,16 @@ class StoreSaleDetailRequest extends FormRequest
         return [
             'sale_id'=> 'required|exists:sales,id',
             'purchase_detail_id'=>'required|exists:purchase_details,id',
-            'unit'=>'required',
-            'quantity'=>'required',
-            'unit_value'=>'required',
-            'description'=>'required',
-            'base_igv'=>'required',
-            'percentage_igv'=>'required',
+            'cantidad'=>'required',
+            'mto_valor_unit'=>'required',
+            'mto_base_igv'=>'required',
+            'porcentaje_igv'=>'required',
             'igv'=>'required',
-            'tax_affected_code'=>'required',
-            'total_taxes'=>'required',
-            'value_sale'=>'required',
-            'unit_price'=>'required'
+            'tip_afe_igv'=>'required',
+            'total_impuestos'=>'required',
+            'mto_valor_venta'=>'required',
+            'mto_precio_unit'=>'required',
+            'store_id'=>'required',
         ];
     }
 }

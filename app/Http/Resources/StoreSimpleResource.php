@@ -13,6 +13,13 @@ class StoreSimpleResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'ruc' => $this->ruc,
+            'address' => [
+                'street' => $this->address,
+                'department' => $this->department,
+                'province' => $this->province,
+                'district' => $this->district,
+            ],
+            'image' => asset('storage/' . $this->image),
             "user_id" => $this->user_id,
         ];
     }

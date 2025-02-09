@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('urbanization');
             $table->string('address');
             $table->string('sunat_local_code');
-
             $table->string('phone')->nullable();
+            $table->string('image')->nullable();
             $table->boolean('status')->default(true);
             $table->foreignId('user_id')->constrained()->onDelete('restrict'); //Responsable de tienda
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');

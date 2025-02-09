@@ -14,23 +14,24 @@ return new class extends Migration
         Schema::create('sale_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sale_id')->constrained('sales')->onDelete('cascade'); // Relación con la venta
+            $table->foreignId('store_id')->constrained()->onDelete('restrict'); // Tienda donde se realiza la venta - Objeto
             $table->foreignId('purchase_detail_id')->constrained()->cascadeOnDelete(); // producto vendido
-            $table->string('sunat_unit'); // Unidad - Catalog. 03
-            $table->integer('quantity'); // Cantidad vendida
-            $table->decimal('unit_value', 10, 2); // Monto valor unitario sin impuestos
-            $table->string('description'); // Descripción del producto o servicio
-            $table->decimal('base_igv', 10, 2); // Base imponible del IGV
-            $table->decimal('igv_percentage', 5, 2); // Porcentaje del IGV
+            $table->integer('cantidad'); // Cantidad vendida
+            $table->decimal('mto_valor_unit', 10, 2); // Monto valor unitario sin impuestos
+            $table->decimal('mto_valor_venta', 10, 2); // Monto valor de venta
+            $table->decimal('mto_base_igv', 10, 2); // Base imponible del IGV
+            $table->decimal('porcentaje_igv', 5, 2); // Porcentaje del IGV
             $table->decimal('igv', 10, 2); // Monto del IGV
-            $table->string('sunat_tax_type', 2); // Tipo de afectación al IGV
-            $table->decimal('total_taxes', 10, 2); // Total de impuestos en el detalle
-            $table->decimal('value_sale', 10, 2); // Monto valor de venta
-            $table->decimal('unit_price', 10, 2); // Precio unitario con impuestos incluidos
+            $table->string('tip_afe_igv', 2); // Tipo de afectación al IGV
+            $table->decimal('total_impuestos', 10, 2); // Total de impuestos en el detalle
+            $table->decimal('mto_precio_unit', 10, 2); // Precio unitario con impuestos incluidos
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();
 
             // Relaciones con las tablas normalizadas
             // $table->foreign('sunat_unit')->references('code')->on('sunat_units')->onDelete('restrict');
-            $table->foreign('sunat_tax_type')->references('code')->on('sunat_tax_types')->onDelete('restrict');
+            $table->foreign('tip_afe_igv')->references('code')->on('sunat_tax_types')->onDelete('restrict');
         });
     }
 
