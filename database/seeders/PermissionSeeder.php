@@ -53,18 +53,6 @@ class PermissionSeeder extends Seeder
                 'updated_at' => '2025-02-04 17:07:50'
             ],
             [
-                'id' => 4,
-                'name' => 'Nueva Reparación',
-                'description' => 'Registra nueva reparación',
-                'icon' => 'add_notes',
-                'route' => '/support/repairs/new-repair',
-                'parent_id' => 2,
-                'order' => 1,
-                'status' => 1,
-                'created_at' => '2025-02-04 17:07:50',
-                'updated_at' => '2025-02-04 17:07:50'
-            ],
-            [
                 'id' => 5,
                 'name' => 'Listar Dispositivos',
                 'description' => 'Lista dispositivos de clientes',

@@ -8,6 +8,7 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceTypeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PurchaseDetailController;
 use App\Http\Controllers\RepairController;
 use App\Http\Controllers\RepairHistoryController;
 use App\Http\Controllers\SaleController;
@@ -80,7 +81,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::post('users/technicians', [UserController::class, 'filterTechnicians']);
 
         Route::patch('repairs/{repair}/changeAtention', [RepairController::class, 'changeAtention']); //Desactivar cliente
-        
+
         //Customer
         Route::patch('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']); //Desactivar cliente
         Route::apiResource('customers', CustomerController::class);
@@ -92,6 +93,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::apiResource('products', ProductController::class);
         //Purchases
         Route::apiResource('purchases', PurchaseController::class);
+        //Detalle de entradas
+        Route::apiResource('entry-details', PurchaseDetailController::class);
         //Repairs
         Route::apiResource('repairs', RepairController::class);
         //Histories

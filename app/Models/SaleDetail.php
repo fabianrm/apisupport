@@ -11,7 +11,7 @@ class SaleDetail extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['sale_id', 'purchase_detail_id', 'cantidad', 'mto_valor_unit', 'mto_base_igv', 'porcentaje_igv', 'igv', 'tip_afe_igv', 'total_impuestos', 'mto_valor_venta', 'mto_precio_unit', 'store_id',];
+    protected $fillable = ['sale_id', 'purchase_detail_id', 'cantidad', 'mto_valor_unit', 'mto_base_igv', 'porcentaje_igv', 'igv', 'tip_afe_igv', 'total_impuestos', 'mto_valor_venta', 'mto_precio_unit', 'discount', 'store_id',];
 
     public function sale()
     {

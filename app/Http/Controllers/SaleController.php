@@ -22,7 +22,7 @@ class SaleController extends Controller
      */
     public function index()
     {
-        $sales = Sale::with(['store', 'customer','customer.documentId', 'paymentMethod', 'operationType', 'documentType', 'currency', 'details'])->get();
+        $sales = Sale::with(['store', 'customer', 'customer.documentId', 'paymentMethod', 'operationType', 'documentType', 'currency', 'details'])->get();
         return new SaleCollection($sales);
     }
 
@@ -41,13 +41,10 @@ class SaleController extends Controller
     {
         // Validar la solicitud completa utilizando el StorePurchaseRequest
         $validatedData = $request->validated();
-
         // Extraer los detalles
         $detailsRequest = $validatedData['details'] ?? [];
-
         try {
             DB::beginTransaction();
-
             // Calcular subtotal, IGV y total en base a los detalles
             $total = 0;
             foreach ($detailsRequest as $detail) {
@@ -55,6 +52,8 @@ class SaleController extends Controller
             }
             $igv = $total - ($total / 1.18); // 18% del subtotal
             $subtotal = $total - $igv; //
+
+            $letras = number_to_letters($total);
 
             // Crear la compra principal con los valores calculados
             $sale = Sale::create(array_merge($validatedData, [
@@ -64,10 +63,10 @@ class SaleController extends Controller
                 "valor_venta" => $subtotal,
                 'subtotal' => $subtotal,
                 'mto_imp_venta' => $total,
+                'active' => 1,
                 'code_legend' => "1000",
-                'value_legend' => "MONTO EN LETRAS",
-                // 'created_by' => auth()->user()->id,
-                // 'updated_by' => auth()->user()->id,
+                'value_legend' => $letras ,
+                'user_id' => auth()->user()->id,
             ]));
 
             // Procesar cada detalle
@@ -77,16 +76,43 @@ class SaleController extends Controller
                     'purchase_detail_id' => 'required|exists:purchase_details,id',
                     'store_id' => 'required|exists:stores,id',
                     'cantidad' => 'required|integer|min:1',
+                    'mto_precio_unit' => 'required',
                 ]);
 
                 if ($validator->fails()) {
                     throw new \Exception($validator->errors()->first());
                 }
 
+                //Encontrar el purchase
+                $purchaseDetail = PurchaseDetail::findOrFail($detail['purchase_detail_id']);
+                $cantidad = $detail['cantidad'];
+                if ($purchaseDetail->remaining_quantity < $cantidad) {
+                    return response()->json([
+                        'message' => 'El producto no cuenta con Stock suficiente',
+                    ], 500);
+                }
+
+                $precio_unitario = $detail['mto_precio_unit'];
+                $discount = ($precio_unitario *  $detail['discount']) / 100;
+                $precio_dscto = $precio_unitario - $discount;
+
+                $mto_valor_unit = ($precio_dscto / 1.18);
+                $mto_base_igv = ($mto_valor_unit * $cantidad);
+                $tot_igv = ($precio_dscto  * $cantidad) -  $mto_base_igv;
+                $total_impuestos = $tot_igv;
+                $mto_valor_venta = $cantidad *  $mto_valor_unit;
+                $mto_precio_unit = $precio_dscto;
+
                 $saleDetail = SaleDetail::create(array_merge($detail, [
                     'sale_id' => $sale->id,
-                    // 'created_by' => auth()->user()->id,
-                    // 'updated_by' => auth()->user()->id,
+                    'mto_valor_unit' => $mto_valor_unit,
+                    'mto_base_igv' => $mto_base_igv,
+                    'porcentaje_igv' => 18.00,
+                    'total_impuestos' => $total_impuestos,
+                    'mto_valor_venta' => $mto_valor_venta,
+                    'mto_precio_unit' => $mto_precio_unit,
+                    'igv' => $tot_igv,
+                    'tip_afe_igv' => '10',
                 ]));
 
                 // Registrar movimiento de inventario
@@ -97,12 +123,8 @@ class SaleController extends Controller
                     'quantity' => -$detail['cantidad'],
                     'unit_price' => $detail['mto_precio_unit'],
                     'description' => 'salida por venta #' . $sale->id,
-                    // 'created_by' => auth()->user()->id,
-                    // 'updated_by' => auth()->user()->id,
                 ]);
 
-                //Encontrar el purchase
-                $purchaseDetail = PurchaseDetail::findOrFail($saleDetail->purchase_detail_id);
 
                 $purchaseDetail->update([
                     'remaining_quantity' => $purchaseDetail->remaining_quantity - $detail['cantidad'],
@@ -123,8 +145,7 @@ class SaleController extends Controller
             }
             DB::commit();
 
-            $sale->load(['store', 'customer','customer.documentId', 'paymentMethod', 'operationType', 'documentType', 'currency', 'details']);
-
+            $sale->load(['store', 'customer', 'customer.documentId', 'paymentMethod', 'operationType', 'documentType', 'currency', 'details']);
 
             return response()->json([
                 'message' => 'Venta registrada exitosamente',
@@ -134,7 +155,7 @@ class SaleController extends Controller
             DB::rollBack();
             Log::error($e->getMessage());
             return response()->json([
-                'message' => 'Error al registrar la compra',
+                'message' => 'Error al registrar la venta',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -173,5 +194,5 @@ class SaleController extends Controller
     }
 
     //Obtener Número de factura
-    
+
 }

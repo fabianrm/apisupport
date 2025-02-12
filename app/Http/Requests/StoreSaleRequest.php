@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class StoreSaleRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class StoreSaleRequest extends FormRequest
         return [
             'customer_id'=>['required', 'exists:customers,id'],
             'store_id'=>['required', 'exists:stores,id'],
-            'user_id'=>['required', 'exists:users,id'],
+            'user_id'=>['', 'exists:users,id'],
             'ubl_version'=>['required'],
             'tipo_operacion'=>['required'],
             'tipo_documento'=>['required'],
@@ -32,16 +33,16 @@ class StoreSaleRequest extends FormRequest
             'serie'=>['required'],
             'correlativo'=>['required'],
             'tipo_moneda'=>['required'],
-            'mto_oper_gravadas'=>['required'],
-            'mto_igv'=>['required'],
-            'total_impuestos'=>['required'],
-            'valor_venta'=>['required'],
-            'subtotal'=>['required'],
-            'mto_imp_venta'=>['required'],
+            'mto_oper_gravadas'=>[''],
+            'mto_igv'=>[''],
+            'total_impuestos'=>[''],
+            'valor_venta'=>[''],
+            'subtotal'=>[''],
+            'mto_imp_venta'=>[''],
             'fecha_emision'=>[''],
             'code_legend'=>[''],
             'value_legend'=>[''],
-            'active'=>['required'],
+            'active'=>[''],
             'details' => 'required|array', // Los detalles deben estar presentes
         ];
     }

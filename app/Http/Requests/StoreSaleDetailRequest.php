@@ -33,6 +33,7 @@ class StoreSaleDetailRequest extends FormRequest
             'total_impuestos'=>'required',
             'mto_valor_venta'=>'required',
             'mto_precio_unit'=>'required',
+            'discount'=>'required',
             'store_id'=>'required',
         ];
     }

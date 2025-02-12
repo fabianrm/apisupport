@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('tip_afe_igv', 2); // Tipo de afectación al IGV
             $table->decimal('total_impuestos', 10, 2); // Total de impuestos en el detalle
             $table->decimal('mto_precio_unit', 10, 2); // Precio unitario con impuestos incluidos
+            $table->decimal('discount', 10, 2); // Precio unitario con impuestos incluidos
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->timestamps();
