@@ -17,6 +17,7 @@ use App\Http\Controllers\SunatCurrencyController;
 use App\Http\Controllers\SunatDocumentIdController;
 use App\Http\Controllers\SunatDocumentTypeController;
 use App\Http\Controllers\SunatOperationTypeController;
+use App\Http\Controllers\SunatSerialController;
 use App\Http\Controllers\SunatUnitController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -81,6 +82,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
         Route::post('users/technicians', [UserController::class, 'filterTechnicians']);
 
         Route::patch('repairs/{repair}/changeAtention', [RepairController::class, 'changeAtention']); //Desactivar cliente
+        
+        Route::get('sunat-serial/{code}', [SunatSerialController::class, 'getByCode']);  //Obtiene correlativo factura
 
         //Customer
         Route::patch('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']); //Desactivar cliente

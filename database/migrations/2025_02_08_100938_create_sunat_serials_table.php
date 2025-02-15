@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('sunat_serials', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->default('03'); // 01->factura, 03->boleta, etc
             $table->foreignId('store_id')->constrained()->onDelete('restrict'); // Tienda
-            $table->enum('document', ['fv', 'bv', 'nc', 'nd', 'gr'])->default('bv');
+            $table->string('document');
             $table->string('serial'); // Serie del comprobante (ejemplo: F001)
             $table->integer('correlative'); // Correlativo
             $table->timestamps();

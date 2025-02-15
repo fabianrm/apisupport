@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DocumentIDResource extends JsonResource
+class SunatSerialResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,10 @@ class DocumentIDResource extends JsonResource
     {
         return [
             'code' => $this->code,
-            'description' => $this->description,
-            'lenght' => $this->lenght,
-            'status' => $this->status
+            'document' =>  $this->document,
+            'serial' =>  $this->serial,
+            'correlative' => $this->correlative,
+            'store_id' => $this->store_id,
         ];
     }
 }

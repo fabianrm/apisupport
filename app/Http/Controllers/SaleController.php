@@ -11,6 +11,7 @@ use App\Models\InventoryMovement;
 use App\Models\Product;
 use App\Models\PurchaseDetail;
 use App\Models\SaleDetail;
+use App\Models\SunatSerial;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -48,15 +49,27 @@ class SaleController extends Controller
             // Calcular subtotal, IGV y total en base a los detalles
             $total = 0;
             foreach ($detailsRequest as $detail) {
-                $total += $detail['mto_precio_unit'] * $detail['cantidad'];
+                $precio_unitario = $detail['mto_precio_unit'];
+                $discount = ($precio_unitario *  $detail['discount']) / 100;
+                $precio_dscto = $precio_unitario - $discount;
+
+                $total += $precio_dscto  * $detail['cantidad'];
             }
             $igv = $total - ($total / 1.18); // 18% del subtotal
             $subtotal = $total - $igv; //
 
             $letras = number_to_letters($total);
 
+            //Obtener código documento Sunat
+            $code = $validatedData['tipo_documento'];
+            $sunatSerial = SunatSerial::where('code', $code)->first();
+            $serie = $sunatSerial->serial;
+            $correlativo = ($sunatSerial->correlative) + 1;
+
             // Crear la compra principal con los valores calculados
             $sale = Sale::create(array_merge($validatedData, [
+                'serie' => $serie,
+                'correlativo' => $correlativo,
                 'mto_oper_gravadas' => $subtotal,
                 'mto_igv' => 18.00,
                 "total_impuestos" => $igv,
@@ -65,7 +78,7 @@ class SaleController extends Controller
                 'mto_imp_venta' => $total,
                 'active' => 1,
                 'code_legend' => "1000",
-                'value_legend' => $letras ,
+                'value_legend' => $letras,
                 'user_id' => auth()->user()->id,
             ]));
 
@@ -125,7 +138,6 @@ class SaleController extends Controller
                     'description' => 'salida por venta #' . $sale->id,
                 ]);
 
-
                 $purchaseDetail->update([
                     'remaining_quantity' => $purchaseDetail->remaining_quantity - $detail['cantidad'],
                 ]);
@@ -142,6 +154,8 @@ class SaleController extends Controller
 
                 // Actualizar el stock actual del producto
                 $product->update(['current_stock' => $currentStock]);
+                //Actualizar el correlativo de la serie Sunat
+                $sunatSerial->update(['correlative' => $correlativo]);
             }
             DB::commit();
 
