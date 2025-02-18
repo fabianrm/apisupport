@@ -19,6 +19,9 @@ class BrandSeeder extends Seeder
             ['name' => 'NEO', 'status' => true],
             ['name' => 'Google', 'status' => true],
             ['name' => 'Huawei', 'status' => true],
+            ['name' => 'iService', 'status' => true],
+            ['name' => 'GX', 'status' => true],
+            ['name' => 'Sin-Marca', 'status' => true],
         ];
 
         foreach ($brands as $brand) {

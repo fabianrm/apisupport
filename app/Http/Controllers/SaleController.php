@@ -128,32 +128,35 @@ class SaleController extends Controller
                     'tip_afe_igv' => '10',
                 ]));
 
-                // Registrar movimiento de inventario
-                InventoryMovement::create([
-                    'purchase_detail_id' => $saleDetail->purchase_detail_id,
-                    'store_id' => $detail['store_id'],
-                    'movement_type_id' => 2, // Tipo de movimiento "entrada"
-                    'quantity' => -$detail['cantidad'],
-                    'unit_price' => $detail['mto_precio_unit'],
-                    'description' => 'salida por venta #' . $sale->id,
-                ]);
-
-                $purchaseDetail->update([
-                    'remaining_quantity' => $purchaseDetail->remaining_quantity - $detail['cantidad'],
-                ]);
-
                 // Actualizar el current_stock del producto
                 $product = Product::findOrFail($purchaseDetail['product_id']);
 
-                $currentStock = $product->purchaseDetails()
-                    ->with('inventoryMovements')
-                    ->get()
-                    ->sum(function ($purchaseDetail) {
-                        return $purchaseDetail->inventoryMovements->sum('quantity');
-                    });
+                if ($product->type !== 'service') {
+                    // Registrar movimiento de inventario
+                    InventoryMovement::create([
+                        'purchase_detail_id' => $saleDetail->purchase_detail_id,
+                        'store_id' => $detail['store_id'],
+                        'movement_type_id' => 2, // Tipo de movimiento "entrada"
+                        'quantity' => -$detail['cantidad'],
+                        'unit_price' => $detail['mto_precio_unit'],
+                        'description' => 'salida por venta #' . $sale->id,
+                    ]);
 
-                // Actualizar el stock actual del producto
-                $product->update(['current_stock' => $currentStock]);
+                    $purchaseDetail->update([
+                        'remaining_quantity' => $purchaseDetail->remaining_quantity - $detail['cantidad'],
+                    ]);
+
+                    $currentStock = $product->purchaseDetails()
+                        ->with('inventoryMovements')
+                        ->get()
+                        ->sum(function ($purchaseDetail) {
+                            return $purchaseDetail->inventoryMovements->sum('quantity');
+                        });
+
+                    // Actualizar el stock actual del producto
+                    $product->update(['current_stock' => $currentStock]);
+                }
+
                 //Actualizar el correlativo de la serie Sunat
                 $sunatSerial->update(['correlative' => $correlativo]);
             }

@@ -17,6 +17,7 @@ class CategorySeeder extends Seeder
             ['name' => 'Moviles', 'status' => true],
             ['name' => 'Computadoras', 'status' => true],
             ['name' => 'Accesorios', 'status' => true],
+            ['name' => 'Servicios', 'status' => true],
         ];
 
         foreach ($categories as $category) {

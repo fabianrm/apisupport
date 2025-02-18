@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->enum('type', ['product', 'part']); // Tipo: producto (product) o repuesto (part)
+            $table->enum('type', ['product', 'part', 'service']); // Tipo: producto (product) o repuesto (part)
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Categoria
             $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade'); // Marca
             $table->string('sunat_unit');

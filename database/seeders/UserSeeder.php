@@ -17,11 +17,11 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'dni' => '12345678',
-                'name' => 'Admin User',
-                'email' => 'admin@gmail.com',
+                'name' => 'Yens A. Farfán',
+                'email' => 'jalordx@gmail.com',
                 'password' => Hash::make('123456'), // Cambia esto si necesitas un valor diferente
                 'address' => '123 Admin Street',
-                'phone' => '987654321',
+                'phone' => '938892277',
                 'status' => true,
             ],
             [
